@@ -1,20 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import { AppBar, Toolbar } from '@material-ui/core';
+import { LobbyContext } from './Context';
+import useLobbyState from './Reducers/LobbyReducer';
+import WebsiteRoutes from './WebsiteRoutes';
 
 function App() {
+  const { state: lobbyState, dispatch: lobbyDispatch } = useLobbyState();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <LobbyContext.Provider value={{ state: lobbyState, dispatch: lobbyDispatch }}>
+      <div className="App">
+        <AppBar position="static">
+          <Toolbar>
+            {/* <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button>Home</Button>
+            </Link>
+            <Link to="/lobby" style={{ textDecoration: 'none' }}>
+              <Button>Lobby</Button>
+            </Link>
+            <Link to="/codenames" style={{ textDecoration: 'none' }}>
+              <Button>Codenames</Button>
+            </Link> */}
+          </Toolbar>
+        </AppBar>
+        <header className="App-header">
+          <WebsiteRoutes />
+        </header>
+      </div>
+    </LobbyContext.Provider>
   );
 }
 

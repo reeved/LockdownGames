@@ -1,0 +1,128 @@
+.container {
+  height: 70vh;
+  width: 60vw;
+  margin: auto;
+}
+
+.gameContainer {
+  background-color: darkslategray;
+  padding: 1em 5em 2em 5em;
+  border-radius: 1em;
+  margin-bottom: 2em;
+}
+
+.gamesList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.game {
+  background-color: lightgray;
+  font-size: calc(10px + 1.3vmin);
+  padding: 4vh 2vw;
+  margin: 0 1em 1em 1em;
+  border-radius: 1em;
+  cursor: pointer;
+  user-select: none;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.game:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+.activeGame {
+  background-color: lightseagreen;
+  border: 2px solid black;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+.moreInfo {
+  background-color: darkslategray;
+  border-radius: 1em;
+  width: 100%;
+  height: 45vh;
+}
+
+.playerList {
+  font-size: calc(10px + 1.3vmin);
+  padding-bottom: 0.8em;
+  color: snow;
+}
+
+.chat {
+  padding: 0 1em 0em 1em;
+}
+
+.chatBox {
+  background-color: white;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  text-align: start;
+  padding: 0 1em;
+  word-wrap: break-word;
+}
+
+.chatMessages {
+  font-size: calc(10px + 0.8vmin);
+  padding-bottom: 0.6em;
+}
+
+.chatInputs {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media only screen and (min-width: 660px) {
+  .container {
+    height: 70vh;
+    width: 60vw;
+    margin: auto;
+  }
+}
+
+@media only screen and (min-width: 1300px) {
+  .container {
+    height: 90vh;
+    width: 80vw;
+    margin: auto;
+  }
+}
+
+h1 {
+  margin-bottom: 2em;
+}
+
+.subheader {
+  margin-bottom: 1em;
+  color: tan;
+  text-decoration: underline;
+}
+
+.chatBox > ::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.chatBox > ::-webkit-scrollbar-track {
+  background: #888;
+}
+
+/* Handle */
+.chatBox > ::-webkit-scrollbar-thumb {
+  background: tan;
+}
+
+/* Handle on hover */
+.chatBox > ::-webkit-scrollbar-thumb:hover {
+  background: navajowhite;
+}

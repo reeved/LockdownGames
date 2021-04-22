@@ -1,0 +1,30 @@
+.container {
+  height: 70vh;
+  width: 60vw;
+  margin: auto;
+}
+
+@media only screen and (min-width: 660px) {
+  .container {
+    height: 70vh;
+    width: 60vw;
+    margin: auto;
+  }
+}
+
+@media only screen and (min-width: 1300px) {
+  .container {
+    height: 90vh;
+    width: 30vw;
+    margin: auto;
+  }
+}
+
+h1 {
+  margin-bottom: 4em;
+}
+
+p {
+  font-size: calc(10px + 1vmin);
+  margin: 0;
+}
