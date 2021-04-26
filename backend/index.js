@@ -37,3 +37,8 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`listening on *:${PORT}`);
 });
+
+// Export the server and lobbyManager object for testing
+exports.server = server;
+exports.io = io;
+exports.lobbyManager = lobbyManager;

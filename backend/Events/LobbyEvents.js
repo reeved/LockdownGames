@@ -56,7 +56,7 @@ function chatMessage(io, socket, lobbyManager) {
   socket.on('chat message', ({ msg, playerNickname }) => {
     const roomID = socket.player.lobbyID;
     console.log(msg);
-    message = playerNickname + ': ' + msg;
+    let message = playerNickname + ': ' + msg;
     io.in(roomID).emit('chat message', message);
   });
 }
