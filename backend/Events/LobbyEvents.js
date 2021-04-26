@@ -1,5 +1,4 @@
-const Lobby = require('../Domain/Lobby');
-const LobbyManager = require('../Domain/LobbyManager');
+/* eslint-disable no-console */
 const Player = require('../Domain/Player');
 
 function createLobby(io, socket, lobbyManager) {
@@ -37,31 +36,31 @@ function joinLobby(io, socket, lobbyManager) {
 }
 
 function leaveLobby(io, socket, lobbyManager) {
-  socket.on('disconnecting', (reason) => {
+  socket.on('disconnecting', () => {
     if (socket.player) {
       const roomID = socket.player.lobbyID;
       const room = io.of('/').adapter.rooms.get(roomID);
-      //console.log('Room: ', room);
+      // console.log('Room: ', room);
 
       if (room.size === 1) {
         console.log('Cleaning up');
-        //user is the last one in the room. lobby should now be cleaned.
+        // user is the last one in the room. lobby should now be cleaned.
         lobbyManager.deleteLobby(roomID);
       }
     }
   });
 }
 
-function chatMessage(io, socket, lobbyManager) {
+function chatMessage(io, socket) {
   socket.on('chat message', ({ msg, playerNickname }) => {
     const roomID = socket.player.lobbyID;
     console.log(msg);
-    let message = playerNickname + ': ' + msg;
+    const message = `${playerNickname}: ${msg}`;
     io.in(roomID).emit('chat message', message);
   });
 }
 
-module.exports = function (io, socket, lobbyManager) {
+module.exports = function exp(io, socket, lobbyManager) {
   createLobby(io, socket, lobbyManager);
   joinLobby(io, socket, lobbyManager);
   chatMessage(io, socket, lobbyManager);

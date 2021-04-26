@@ -46,7 +46,7 @@ describe('LobbyEvent Socket Testing', () => {
   });
 
   test('Creating Multiple Lobbies', (done) => {
-    function callback(data) {
+    function callback() {
       try {
         expect(BackendServer.lobbyManager.lobbies.size).toBe(3);
         done();
@@ -78,7 +78,7 @@ describe('LobbyEvent Socket Testing', () => {
     function callback(data) {
       try {
         // Get the Lobby's player list from the Lobby Manager
-        const players = BackendServer.lobbyManager.lobbies.get(lobbyCode).players;
+        const { players } = BackendServer.lobbyManager.lobbies.get(lobbyCode);
         expect(data.returnRoomID).toBeTruthy();
         expect(players).toHaveLength(6);
         done();
@@ -87,14 +87,14 @@ describe('LobbyEvent Socket Testing', () => {
       }
     }
 
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i < 6; i += 1) {
       // Only run tests once all Players have been added
       joinLobby(i === 5 ? callback : null, lobbyPlayers, i, port, lobbyCode);
     }
   });
 
   test('Lobby gets Deleted when all players have Disconnected', (done) => {
-    function callback(data) {
+    function callback() {
       try {
         const players = BackendServer.lobbyManager.lobbies.get(lobbyCode);
         // Lobby should be undefined since it gets deleted from the Lobby Manager
@@ -106,16 +106,16 @@ describe('LobbyEvent Socket Testing', () => {
     }
 
     function disconnect() {
-      for (let i = 0; i < 6; i++) {
-        let socketID = BackendServer.lobbyManager.lobbies.get(lobbyCode).players[i].socketID;
-        let socket = BackendServer.io.sockets.sockets.get(socketID);
+      for (let i = 0; i < 6; i += 1) {
+        const { socketID } = BackendServer.lobbyManager.lobbies.get(lobbyCode).players[i];
+        const socket = BackendServer.io.sockets.sockets.get(socketID);
         socket.disconnect();
         // Only run tests once all sockets have been disconnected
-        i === 5 ? callback() : null;
+        i === 5 && callback();
       }
     }
 
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i < 6; i += 1) {
       // Only disconnect sockets once all sockets have been added
       joinLobby(i === 5 ? disconnect : null, lobbyPlayers, i, port, lobbyCode);
     }

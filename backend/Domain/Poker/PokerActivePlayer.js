@@ -10,7 +10,6 @@ class PokerActivePlayer {
   bet(amount) {
     this.currentBet += amount;
     this.stack -= amount;
-    this.currentAction = 'bet';
   }
 }
 

@@ -6,36 +6,37 @@ class Lobby {
     this.chatMessages = [];
   }
 
+  // eslint-disable-next-line class-methods-use-this
   setRoomID() {
     const LOBBY_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXTZ';
     const LOBBY_ID_LENGTH = 6;
-    var randomstring = '';
+    let randomstring = '';
 
-    //put a loop to select a character randomly in each iteration
-    for (var i = 0; i < LOBBY_ID_LENGTH; i++) {
-      var rnum = Math.floor(Math.random() * LOBBY_CHARS.length);
+    // put a loop to select a character randomly in each iteration
+    for (let i = 0; i < LOBBY_ID_LENGTH; i += 1) {
+      const rnum = Math.floor(Math.random() * LOBBY_CHARS.length);
       randomstring += LOBBY_CHARS.substring(rnum, rnum + 1);
     }
     return randomstring;
   }
 
-  //To be used when joining/creating a lobby
+  // To be used when joining/creating a lobby
   addPlayer(player) {
     if (player) {
       this.players.push(player);
     }
   }
 
-  //To be used when a player disconnects from a lobby
+  // To be used when a player disconnects from a lobby
   removePlayer(player) {
     if (player) {
-      const index = players.indexOf(player);
+      const index = this.players.indexOf(player);
       this.players.splice(index, 1);
     }
   }
 
   getPlayerNicknames() {
-    let playerList = [];
+    const playerList = [];
     this.players.forEach((p) => {
       playerList.push(p.nickname);
     });

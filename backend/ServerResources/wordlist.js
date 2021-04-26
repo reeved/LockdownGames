@@ -1,4 +1,4 @@
-//Taken from https://github.com/seanlyons/codenames/blob/master/wordlist.txt
+// Taken from https://github.com/seanlyons/codenames/blob/master/wordlist.txt
 
 const words = [
   { id: 1, word: 'africa', status: 'safe' },
@@ -189,6 +189,6 @@ const words = [
   { id: 187, word: 'yard', status: 'safe' },
 ];
 
-//Object.freeze(GameStateEnum);
+// Object.freeze(GameStateEnum);
 
 module.exports = words;

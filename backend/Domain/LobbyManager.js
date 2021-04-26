@@ -6,9 +6,9 @@ class LobbyManager {
   }
 
   createLobby() {
-    var lobby = null;
+    let lobby = null;
 
-    //Generate a new lobby by making sure the lobbyID is unique
+    // Generate a new lobby by making sure the lobbyID is unique
     while (!lobby) {
       lobby = new Lobby();
 
@@ -17,7 +17,7 @@ class LobbyManager {
       }
     }
 
-    //Save the newly created unique lobby
+    // Save the newly created unique lobby
     this.lobbies.set(lobby.roomID, lobby);
 
     return lobby;
@@ -28,7 +28,7 @@ class LobbyManager {
   }
 
   deleteLobby(lobbyID) {
-    //deletes lobby from Map so that the ID can be reallocated in the future
+    // deletes lobby from Map so that the ID can be reallocated in the future
     this.lobbies.delete(lobbyID);
   }
 }

@@ -1,7 +1,8 @@
+/* eslint-disable no-restricted-syntax */
 const PokerPlayer = require('./PokerPlayer');
 const PokerRound = require('./PokerRound');
 const PokerActivePlayer = require('./PokerActivePlayer');
-const { STARTING_STACK, SMALL_BLIND_VALUE, BIG_BLIND_VALUE } = require('./Config');
+const { STARTING_STACK } = require('./Config');
 
 class GameState {
   constructor(players) {
@@ -15,10 +16,10 @@ class GameState {
   }
 
   createPokerRound() {
-    let pokerActivePlayers = [];
-    for (let i = 0; i < this.playerState.length; i++) {
-      let playerIndex = (this.dealerNumber + i) % this.playerState.length;
-      let { playerName, stack, socketID } = this.playerState[playerIndex];
+    const pokerActivePlayers = [];
+    for (let i = 0; i < this.playerState.length; i += 1) {
+      const playerIndex = (this.dealerNumber + i) % this.playerState.length;
+      const { playerName, stack, socketID } = this.playerState[playerIndex];
       if (stack !== 0) {
         pokerActivePlayers.push(new PokerActivePlayer(playerName, stack, socketID));
       }
@@ -27,7 +28,7 @@ class GameState {
   }
 
   updateStacks(updatedStacks) {
-    for (let i in this.playerState) {
+    for (const i in this.playerState) {
       if (updatedStacks.has(this.playerState[i].playerName)) {
         this.playerState[i].stack = updatedStacks.get(this.playerState[i].playerName);
       }

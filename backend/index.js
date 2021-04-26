@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const socketio = require('socket.io');
 const http = require('http');
@@ -31,7 +32,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
-  //loadCodenamesEvents(io, socket);
+  // loadCodenamesEvents(io, socket);
 });
 
 server.listen(PORT, () => {

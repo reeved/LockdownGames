@@ -1,13 +1,12 @@
 const words = require('../ServerResources/wordlist.js');
-const Lobby = require('../Domain/Lobby');
 
 function shuffle(array) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
+  let currentIndex = array.length;
+  let temporaryValue;
+  let randomIndex;
 
   // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
@@ -25,18 +24,18 @@ function newGame(io, socket) {
   socket.on('new-game', () => {
     const roomID = socket.player.lobbyID;
     const numWords = 24;
-    var shuffledWords = shuffle(words);
-    var boardWords = shuffledWords.slice(0, numWords);
+    const shuffledWords = shuffle(words);
+    let boardWords = shuffledWords.slice(0, numWords);
 
-    for (var i = 0; i < 24; i++) {
+    for (let i = 0; i < 24; i += 1) {
       if (i === 23) {
-        boardWords[i]['status'] = 'bomb';
+        boardWords[i].status = 'bomb';
       } else if (i > 15) {
-        boardWords[i]['status'] = 'unsafe';
+        boardWords[i].status = 'unsafe';
       } else if (i > 7) {
-        boardWords[i]['status'] = 'Red';
+        boardWords[i].status = 'Red';
       } else {
-        boardWords[i]['status'] = 'Blue';
+        boardWords[i].status = 'Blue';
       }
     }
 
@@ -74,7 +73,7 @@ function setGameOver(io, socket) {
   });
 }
 
-module.exports = function (io, socket) {
+module.exports = function exp(io, socket) {
   newGame(io, socket);
   decrementScore(io, socket);
   setGameOver(io, socket);
