@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 
 const loadCodenamesEvents = require('./Events/CodenamesEvents');
 const loadLobbyEvents = require('./Events/LobbyEvents');
+const loadPokerEvents = require('./Events/PokerEvents');
 const LobbyManager = require('./Domain/LobbyManager');
 
 const lobbyManager = new LobbyManager();
@@ -26,6 +27,7 @@ io.on('connection', (socket) => {
   console.log('A new user has connected.');
   loadCodenamesEvents(io, socket);
   loadLobbyEvents(io, socket, lobbyManager);
+  loadPokerEvents(io, socket, lobbyManager);
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

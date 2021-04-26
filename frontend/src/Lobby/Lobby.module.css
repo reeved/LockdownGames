@@ -31,6 +31,7 @@
   user-select: none;
   flex-grow: 1;
   flex-basis: 0;
+  text-transform: capitalize;
 }
 
 .game:hover {

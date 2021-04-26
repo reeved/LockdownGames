@@ -1,0 +1,9 @@
+const STARTING_STACK = 1000;
+const SMALL_BLIND_VALUE = 10;
+const BIG_BLIND_VALUE = 20;
+
+module.exports = {
+  STARTING_STACK,
+  SMALL_BLIND_VALUE,
+  BIG_BLIND_VALUE,
+};

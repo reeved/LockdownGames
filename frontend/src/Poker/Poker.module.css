@@ -1,0 +1,21 @@
+.isMe {
+  color: blue;
+}
+
+.cardImage {
+  height: 105px;
+  width: 75px;
+}
+
+.playerBox {
+  border-style: solid;
+  border-width: 3px;
+  width: 300px;
+  text-align: center;
+  margin: 2px;
+  background-color: pink;
+}
+
+.borderActive {
+  border-color: yellow;
+}

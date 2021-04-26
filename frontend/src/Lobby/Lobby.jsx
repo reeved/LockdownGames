@@ -31,7 +31,7 @@ const Lobby = ({ loggedIn }) => {
   const [chosenGame, setGame] = useState('Codenames');
   const [msg, setMsg] = useState('');
 
-  const games = ['Codenames', 'Poker', 'Tahi', 'Scum'];
+  const games = ['codenames', 'poker', 'tahi', 'scum'];
 
   const playerNickname = lobbyState.nickname;
   const players = lobbyState.players;
@@ -72,8 +72,8 @@ const Lobby = ({ loggedIn }) => {
             <h2 className={styles.subheader}>About Game</h2>
             <h3>{`Your Name: ${playerNickname}`}</h3>
             <h3>{`Lobby ID: ${lobbyID}`}</h3>
-            <Link to="/codenames" style={{ textDecoration: 'none' }}>
-              <Button size="large" variant="contained" onClick={() => socket.emit('new-game')}>
+            <Link to={`/${chosenGame}`} style={{ textDecoration: 'none' }}>
+              <Button size="large" variant="contained" onClick={() => socket.emit(`${chosenGame}-new-game`)}>
                 Start Game
               </Button>
             </Link>

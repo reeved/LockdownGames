@@ -23,6 +23,10 @@ class LobbyManager {
     return lobby;
   }
 
+  getLobby(lobbyID) {
+    return this.lobbies.get(lobbyID);
+  }
+
   deleteLobby(lobbyID) {
     //deletes lobby from Map so that the ID can be reallocated in the future
     this.lobbies.delete(lobbyID);
