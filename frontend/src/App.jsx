@@ -1,4 +1,5 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { AppBar, Toolbar } from '@material-ui/core';
 import { LobbyContext } from './Context';
