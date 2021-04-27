@@ -1,5 +1,5 @@
-/* eslint-disable no-restricted-syntax */
 const { SMALL_BLIND_VALUE, BIG_BLIND_VALUE } = require('./Config');
+const CalculateShowDown = require('./CalculateShowdown');
 
 class PokerRound {
   constructor(pokerActivePlayers) {
@@ -38,6 +38,7 @@ class PokerRound {
 
   handleFold() {
     const playerFolding = this.pokerActivePlayers[this.onActionIndex];
+    this.cardMap.delete(playerFolding.playerName);
     this.updatedStacks.set(playerFolding.playerName, playerFolding.stack);
     this.pokerActivePlayers.splice(this.onActionIndex, 1);
     if (this.pokerActivePlayers.length === 1) {
@@ -90,6 +91,7 @@ class PokerRound {
 
   roundCleanup() {
     if (this.whichRound === 3) {
+      this.handleShowdown();
       return {
         type: 'play-over',
         updatedStacks: this.updatedStacks,
@@ -98,17 +100,20 @@ class PokerRound {
     this.currentRaise = 0;
     this.whichRound += 1;
     this.onActionIndex = this.dealerIndex + 1;
-    // eslint-disable-next-line guard-for-in
-    for (const i in this.pokerActivePlayers) {
-      this.pokerActivePlayers[i].currentAction = 'waiting';
-      this.pokerActivePlayers[i].currentBet = 0;
-    }
+    this.pokerActivePlayers.forEach((element) => {
+      element.currentAction = 'waiting';
+      element.currentBet = 0;
+    });
     this.pokerActivePlayers[this.onActionIndex].currentAction = 'onAction';
     return {
       type: 'round-over',
     };
   }
 
+  handleShowdown() {
+    const showdown = new CalculateShowDown(this.board, this.pokerActivePlayers, this.cardMap, this.updatedStacks);
+    this.updatedStacks = showdown.distributeWinnings();
+  }
   // calculateResult() {}
 
   // clear() {}

@@ -34,7 +34,7 @@ it('creating poker round one busted', () => {
 
 it('testing initialising holecards', () => {
   game.createPokerRound();
-  game.generateHoleCards();
+  game.distributeHoleCards();
   expect(game.deck.getSize()).toBe(46);
   expect(game.pokerRound.cardMap.size).toBe(3);
 });
@@ -76,6 +76,7 @@ it('testing handleFold 3 players', () => {
 it('testing handleFold 2 players', () => {
   game.gameState.playerState[0].stack = 0; // a is busted
   game.createPokerRound();
+  game.distributeHoleCards();
   game.handlePlayStart();
   const gameState = game.handleFold();
   expect(gameState instanceof GameState).toBe(true);
@@ -100,6 +101,19 @@ it('testing handleCheck - into flop', () => {
   expect(pokerRound.currentRaise).toBe(0);
   expect(pokerRound.board).toHaveLength(3);
   expect(game.deck.getSize()).toBe(43);
+});
+
+it('testing handleCheck - showdown', () => {
+  game.createPokerRound();
+  game.distributeHoleCards();
+  game.handlePlayStart();
+  game.handleCall(20);
+  game.handleCall(10);
+  for (let i = 0; i < 9; i += 1) {
+    game.handleCheck();
+  }
+  const gameState = game.handleCheck();
+  console.log(gameState);
 });
 
 it('testing handleCall no major update', () => {

@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const PokerPlayer = require('./PokerPlayer');
 const PokerRound = require('./PokerRound');
 const PokerActivePlayer = require('./PokerActivePlayer');
@@ -28,11 +27,11 @@ class GameState {
   }
 
   updateStacks(updatedStacks) {
-    for (const i in this.playerState) {
-      if (updatedStacks.has(this.playerState[i].playerName)) {
-        this.playerState[i].stack = updatedStacks.get(this.playerState[i].playerName);
+    this.playerState.forEach((element) => {
+      if (updatedStacks.has(element.playerName)) {
+        element.stack = updatedStacks.get(element.playerName);
       }
-    }
+    });
   }
 }
 

@@ -1,9 +1,8 @@
-/* eslint-disable no-restricted-syntax */
 const Card = require('./Card.js');
 
 class Deck {
   constructor() {
-    this.state = this.createDeck();
+    this.state = Deck.createDeck();
     this.shuffleDeck();
   }
 
@@ -11,7 +10,12 @@ class Deck {
     return this.state.length;
   }
 
-  getTwoCards() {
+  getThreeCards() {
+    const cardArray = [this.getACard(), this.getACard(), this.getACard()];
+    return cardArray;
+  }
+
+  getHoleCards() {
     return {
       card1: this.getACard(),
       card2: this.getACard(),
@@ -19,22 +23,19 @@ class Deck {
   }
 
   getACard() {
-    this.shuffleDeck();
     const cardArray = this.state.splice(-1, 1);
-    return `${cardArray[0].getValue()}${cardArray[0].getSuit()}`;
+    return cardArray[0].getValue() + cardArray[0].getSuit();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  createDeck() {
+  static createDeck() {
     const state = [];
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const suits = ['C', 'D', 'H', 'S'];
-    for (const value of values) {
-      for (const suit of suits) {
-        const card = new Card(value, suit);
-        state.push(card);
-      }
-    }
+    values.forEach((value) => {
+      suits.forEach((suit) => {
+        state.push(new Card(value, suit));
+      });
+    });
     return state;
   }
 

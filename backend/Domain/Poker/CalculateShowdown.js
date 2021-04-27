@@ -1,262 +1,271 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-console */
 class CalculateShowDown {
-  constructor(board, arrayOfHands, arrayOfPlayerNames, pot) {
+  constructor(board, pokerActivePlayers, cardMap, updatedStacks) {
     this.sortOrder = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    this.result = 'PLACEHOLDER';
-    this.pot = pot;
-    this.bestHand = null;
-    this.arrangeTheShowDown(board, arrayOfHands, arrayOfPlayerNames);
+    this.board = board;
+    this.pokerActivePlayers = pokerActivePlayers;
+    this.cardMap = cardMap;
+    this.updatedStacks = updatedStacks;
+    this.winningsMap = new Map(); // playerName => new Stack
+    this.bestHandMap = new Map(); // playerName => best Hand
+    this.pokerActivePlayers.forEach((element) => {
+      this.bestHandMap.set(element.playerName, this.evaluateBestHand(element.playerName));
+    });
   }
 
-  arrangeTheShowDown(board, arrayOfHands, arrayOfPlayerNames) {
-    const arrayOfBestHands = [];
-    for (let i = 0; i < arrayOfHands.length; i += 1) {
-      const hand = arrayOfHands[i];
-      this.playerName = arrayOfPlayerNames[i];
-      const extendedBoard = [...board, hand[0], hand[1]];
-      console.log(`${this.sortOrderplayerName}:`);
-      const bestHandForOnePlayer = this.getBestHandForOnePlayer(extendedBoard, this.playerName);
-      console.log(bestHandForOnePlayer);
-      arrayOfBestHands.push(bestHandForOnePlayer);
+  distributeWinnings() {
+    while (this.pokerActivePlayers.length > 1) {
+      let pot = 0;
+      let minStack = Number.POSITIVE_INFINITY;
+      this.pokerActivePlayers.forEach((element) => {
+        if (element.invested < minStack) minStack = element.invested; // getting minStack
+      });
+      pot += minStack * this.pokerActivePlayers.length;
+      this.pokerActivePlayers.forEach((element) => {
+        element.invested -= minStack;
+      });
+      const winningHand = this.evaluateWinningHand();
+      const winners = [];
+      this.pokerActivePlayers.forEach((element) => {
+        const hand1 = JSON.stringify(winningHand);
+        const hand2 = JSON.stringify(this.bestHandMap.get(element.playerName));
+        if (hand1 === hand2) {
+          winners.push(element);
+        }
+      });
+      winners.forEach((element) => {
+        element.stack += pot / winners.length;
+      });
+      let i = this.pokerActivePlayers.length - 1;
+      while (i > 0) {
+        if (this.pokerActivePlayers[i].invested === 0) {
+          this.updatedStacks.set(this.pokerActivePlayers[i].playerName, this.pokerActivePlayers[i].stack);
+          this.pokerActivePlayers.splice(i, 1);
+        }
+        i -= 1;
+      }
+      pot = 0;
     }
-    // eslint-disable-next-line prefer-destructuring
-    this.bestHand = arrayOfBestHands[0];
-    console.log(arrayOfBestHands);
-    for (let i = 0; i < arrayOfBestHands.length; i += 1) {
-      this.playerName = arrayOfPlayerNames[i];
-      const hand = arrayOfBestHands[i];
-      this.compareTwoHands(hand);
+    if (this.pokerActivePlayers.length === 1) {
+      this.pokerActivePlayers[0].stack += this.pokerActivePlayers[0].invested;
+      this.updatedStacks.set(this.pokerActivePlayers[0].playerName, this.pokerActivePlayers[0].stack);
     }
-    this.result = {
-      message: `The winning hand is ${this.bestHand.playerName}: ${this.bestHand.hand} with a ${this.bestHand.type} they have won a pot of ${this.pot}`,
-      winningName: this.bestHand.playerName,
-      pot: this.pot,
-    };
+    return this.updatedStacks;
   }
 
-  getBestHandForOnePlayer(extendedBoard, playerName) {
-    this.bestHand = {
-      type: 'HighCard',
-      hand: ['2', '3', '4', '5', '7'], // rated of importance (left ot right)
-      playerName,
+  evaluateWinningHand() {
+    let winningHand = {
+      justValues: ['2', '3', '4', '5', '7'],
+      type: 'high-card',
     };
+    this.bestHandMap.forEach((value) => {
+      winningHand = this.compareTwoHands(value, winningHand);
+    });
+    return winningHand;
+  }
 
+  evaluateBestHand(playerName) {
+    const { card1, card2 } = this.cardMap.get(playerName);
+    const extendedBoard = this.board.slice();
+    extendedBoard.push(card1);
+    extendedBoard.push(card2);
+    let bestHand = {
+      justValues: ['2', '3', '4', '5', '7'],
+      type: 'high-card',
+    };
     for (let i = 0; i < 6; i += 1) {
-      // [ the first 6 cards]
       for (let j = i + 1; j < 7; j += 1) {
-        // [the rest ]
-        const potentialHand = [];
+        const aHand = [];
         for (let k = 0; k < 7; k += 1) {
           if (k !== i && k !== j) {
-            potentialHand.push(extendedBoard[k]);
+            aHand.push(extendedBoard[k]);
           }
         }
-
-        const justValues = this.calculateJustValues(potentialHand);
-        this.calculateValue(potentialHand, justValues);
+        bestHand = this.compareTwoHands(bestHand, this.evaluateHand(aHand));
       }
     }
-    return this.bestHand;
+    return bestHand;
   }
 
-  calculateJustValues(hand) {
-    const justValues = [];
-    for (const card of hand) {
-      justValues.push(card.substring(0, card.length - 1));
-    }
+  evaluateHand(theHand) {
+    const justValues = theHand.map((s) => s.slice(0, -1));
     justValues.sort((a, b) => this.sortOrder.indexOf(a) - this.sortOrder.indexOf(b));
-    return justValues;
-  }
+    const justSuits = theHand.map((s) => s.slice(-1, s.length));
 
-  calculateValue(potentialHand, justValues) {
-    if (this.checkFlush(potentialHand) && this.checkStraight(justValues)) {
-      this.bestHand.type = 'StraightFlush';
-    } else if (
-      this.checkFourOfAKind(justValues) ||
-      this.checkFullHouse(justValues) ||
-      this.checkStraight(justValues) ||
-      this.checkThreeOfAKind(justValues) ||
-      this.checkTwoPair(justValues) ||
-      this.checkPair(justValues) ||
-      this.checkHighCard(justValues)
-      // eslint-disable-next-line no-empty
-    ) {
+    if (this.checkStraightFlush(justSuits, justValues)) {
+      return this.checkStraightFlush(justSuits, justValues);
     }
-    // console.log("The best combo for this hand is" + this.bestHand.type)
-    // console.log("the best hand is : " + this.bestHand.hand  )
+    if (CalculateShowDown.checkFourOfAKind(justValues)) {
+      return CalculateShowDown.checkFourOfAKind(justValues);
+    }
+    if (CalculateShowDown.checkFullHouse(justValues)) {
+      return CalculateShowDown.checkFullHouse(justValues);
+    }
+    if (CalculateShowDown.checkFlush(justSuits)) {
+      return {
+        justValues,
+        type: 'flush',
+      };
+    }
+    if (this.checkStraight(justValues)) {
+      return this.checkStraight(justValues);
+    }
+    if (CalculateShowDown.checkThreeOfAKind(justValues)) {
+      return CalculateShowDown.checkThreeOfAKind(justValues);
+    }
+    if (CalculateShowDown.checkTwoPair(justValues)) {
+      return CalculateShowDown.checkTwoPair(justValues);
+    }
+    if (CalculateShowDown.checkPair(justValues)) {
+      return CalculateShowDown.checkPair(justValues);
+    }
+    return {
+      justValues,
+      type: 'high-card',
+    };
   }
 
-  compareTwoHands(competingHand) {
-    // type. hand
-    competingHand.playerName = this.playerName;
-    const bestOrder = ['HighCard', 'Pair', 'TwoPair', 'ThreeOfAKind', 'Straight', 'Flush', 'FullHouse', 'FourOfAKind', 'StraightFlush'];
-    if (competingHand.type === this.bestHand.type) {
-      // compare Hands
+  compareTwoHands(hand1, hand2) {
+    const bestOrder = ['high-card', 'pair', 'two-pair', 'three-of-a-kind', 'straight', 'flush', 'full-house', 'four-of-a-kind', 'straight-flush'];
+    if (hand1.type === hand2.type) {
       for (let i = 4; i >= 0; i -= 1) {
-        if (this.sortOrder.indexOf(competingHand.hand[i]) > this.sortOrder.indexOf(this.bestHand.hand[i])) {
-          this.bestHand = competingHand;
-        } else if (this.sortOrder.indexOf(competingHand.hand[i]) < this.sortOrder.indexOf(this.bestHand.hand[i])) {
-          return;
+        if (hand1.justValues[i] !== hand2.justValues[i]) {
+          if (this.sortOrder.indexOf(hand1.justValues[i] > this.sortOrder.indexOf(hand2.justValues[i]))) {
+            return hand1;
+          }
+          return hand2;
         }
       }
-    } else if (bestOrder.indexOf(competingHand.type) > bestOrder.indexOf(this.bestHand.type)) {
-      this.bestHand = competingHand;
+      return hand1; // same hand
     }
+    if (bestOrder.indexOf(hand1.type) > bestOrder.indexOf(hand2.type)) {
+      return hand1;
+    }
+    return hand2;
   }
 
-  checkFourOfAKind(justValues) {
-    const competingHand = {
-      type: 'FourOfAKind',
-      hand: null,
-    };
+  checkStraightFlush(justSuits, justValues) {
+    if (CalculateShowDown.checkFlush(justSuits) && this.checkStraight(justValues)) {
+      return {
+        justValues,
+        type: 'straight-flush',
+      };
+    }
+    return null;
+  }
+
+  static checkFourOfAKind(justValues) {
     if (justValues[0] === justValues[3]) {
-      this.swapIndex(justValues, 0, 4);
-      competingHand.hand = justValues;
+      CalculateShowDown.swapIndex(justValues, 0, 4);
     } else if (justValues[1] === justValues[4]) {
-      competingHand.hand = justValues;
+      // empty
     } else {
-      return false;
+      return null;
     }
-    this.compareTwoHands(competingHand);
-    return true;
+    return {
+      justValues,
+      type: 'four-of-a-kind',
+    };
   }
 
-  checkFullHouse(justValues) {
-    const competingHand = {
-      type: 'FullHouse',
-      hand: null,
-    };
+  static checkFullHouse(justValues) {
     if (justValues[0] === justValues[2] && justValues[3] === justValues[4]) {
-      this.swapIndex(justValues, 0, 4);
-      this.swapIndex(justValues, 1, 3);
-      competingHand.hand = justValues;
+      CalculateShowDown.swapIndex(justValues, 0, 4);
+      CalculateShowDown.swapIndex(justValues, 1, 3);
     } else if (justValues[0] === justValues[1] && justValues[2] === justValues[4]) {
-      competingHand.hand = justValues;
+      // empty
     } else {
-      return false;
+      return null;
     }
-    this.compareTwoHands(competingHand);
-    return true;
+    return {
+      justValues,
+      type: 'full-house',
+    };
   }
 
-  checkFlush(hand, justValues) {
-    const suit = hand[0].slice(-1);
-    for (const card of hand) {
-      if (card.slice(-1) !== suit) {
-        return false;
-      }
-    }
-    const competingHand = {
-      type: 'Flush',
-      hand: justValues,
-    };
-    this.compareTwoHands(competingHand);
-    return true;
+  static checkFlush(justSuits) {
+    return justSuits.every((val, i, arr) => val === arr[0]);
   }
 
   checkStraight(justValues) {
-    const competingHand = {
-      type: 'Straight',
-      hand: null,
-    };
-    const noDups = new Set(justValues);
-    if (justValues.length === noDups.size && this.sortOrder.indexOf(justValues[4]) === this.sortOrder.indexOf(justValues[0]) + 4) {
-      competingHand.hand = justValues;
-    } else if (justValues.length === noDups.size && justValues[0] === '2' && justValues[3] === '5' && justValues[4] === 'A') {
+    const wheel = ['2', '3', '4', '5', 'A'];
+    if (justValues === wheel) {
       const endCard = justValues.pop();
       justValues.unshift(endCard);
-      competingHand.hand = justValues;
-    } else {
-      return false;
+      return {
+        justValues,
+        type: 'straight',
+      };
     }
-    this.compareTwoHands(competingHand);
-    return true;
+    for (let i = 1; i < 5; i += 1) {
+      if (this.sortOrder.indexOf(justValues[i]) !== this.sortOrder.indexOf(justValues[i - 1]) + 1) {
+        return null;
+      }
+    }
+    return {
+      justValues,
+      type: 'straight',
+    };
   }
 
-  checkThreeOfAKind(justValues) {
-    const competingHand = {
-      type: 'ThreeOfAKind',
-      hand: null,
-    };
+  static checkThreeOfAKind(justValues) {
     if (justValues[0] === justValues[2]) {
-      this.swapIndex(justValues, 0, 3);
-      this.swapIndex(justValues, 1, 4);
+      CalculateShowDown.swapIndex(justValues, 0, 3);
+      CalculateShowDown.swapIndex(justValues, 1, 4);
     } else if (justValues[1] === justValues[3]) {
-      this.swapIndex(justValues, 1, 4);
-      // eslint-disable-next-line no-empty
+      CalculateShowDown.swapIndex(justValues, 1, 4);
     } else if (justValues[2] === justValues[4]) {
+      // empty
     } else {
-      return false;
+      return null;
     }
-    competingHand.hand = justValues;
-    this.compareTwoHands(competingHand);
-    return true;
+    return {
+      justValues,
+      type: 'three-of-a-kind',
+    };
   }
 
-  checkTwoPair(justValues) {
-    const competingHand = {
-      type: 'TwoPair',
-      hand: null,
-    };
+  static checkTwoPair(justValues) {
     if (justValues[0] === justValues[1] && justValues[2] === justValues[3]) {
       const endCard = justValues.pop();
       justValues.unshift(endCard);
     } else if (justValues[0] === justValues[1] && justValues[3] === justValues[4]) {
-      this.swapIndex(justValues, 0, 2);
-      // eslint-disable-next-line no-empty
+      CalculateShowDown.swapIndex(justValues, 0, 2);
     } else if (justValues[1] === justValues[2] && justValues[3] === justValues[4]) {
+      // empty
     } else {
-      return false;
+      return null;
     }
-    competingHand.hand = justValues;
-    this.compareTwoHands(competingHand);
-    return true;
+    return {
+      justValues,
+      type: 'two-pair',
+    };
   }
 
-  checkPair(justValues) {
-    const competingHand = {
-      type: 'Pair',
-      hand: null,
-    };
+  static checkPair(justValues) {
     if (justValues[0] === justValues[1]) {
       const pair = justValues.splice(0, 2);
       justValues.push(pair);
     } else if (justValues[1] === justValues[2]) {
-      this.swapIndex(justValues, 1, 3);
-      this.swapIndex(justValues, 2, 4);
+      CalculateShowDown.swapIndex(justValues, 1, 3);
+      CalculateShowDown.swapIndex(justValues, 2, 4);
     } else if (justValues[2] === justValues[3]) {
-      this.swapIndex(justValues, 2, 4);
-      this.swapIndex(justValues, 3, 4);
-      // eslint-disable-next-line no-empty
+      CalculateShowDown.swapIndex(justValues, 2, 4);
+      CalculateShowDown.swapIndex(justValues, 3, 4);
     } else if (justValues[3] === justValues[4]) {
+      // empty
     } else {
       return false;
     }
-    competingHand.hand = justValues;
-    this.compareTwoHands(competingHand);
-    return true;
-  }
-
-  checkHighCard(justValues) {
-    const competingHand = {
-      type: 'HighCard',
-      hand: justValues,
+    return {
+      justValues,
+      type: 'pair',
     };
-    competingHand.hand = justValues;
-    this.compareTwoHands(competingHand);
-    return true;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  swapIndex(array, index1, index2) {
+  static swapIndex(array, index1, index2) {
     const temp = array[index1];
     array[index1] = array[index2];
     array[index2] = temp;
-  }
-
-  getResult() {
-    return this.result;
   }
 }
 
