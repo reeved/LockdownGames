@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-focused-tests */
 import Game from '../Game';
 import PokerPlayer from '../PokerPlayer';
 import PokerActivePlayer from '../PokerActivePlayer';
@@ -113,7 +114,7 @@ it('testing handleCheck - showdown', () => {
     game.handleCheck();
   }
   const gameState = game.handleCheck();
-  console.log(gameState);
+  // console.log(gameState);
 });
 
 it('testing handleCall no major update', () => {
@@ -123,4 +124,47 @@ it('testing handleCall no major update', () => {
   expect(pokerRound.pokerActivePlayers[0].currentBet).toBe(20);
   expect(pokerRound.pokerActivePlayers[0].currentAction).toBe('call');
   expect(pokerRound.pokerActivePlayers[1].currentAction).toBe('onAction');
+});
+
+it('testing handleRaise', () => {
+  game.createPokerRound();
+  game.distributeHoleCards();
+  game.handlePlayStart();
+  const pokerRound = game.handleRaise(100);
+  expect(pokerRound.pokerActivePlayers[0].currentBet).toBe(100);
+  expect(pokerRound.pokerActivePlayers[0].currentAction).toBe('raise');
+  expect(pokerRound.pokerActivePlayers[1].currentAction).toBe('onAction');
+});
+
+it('testing all-in', () => {
+  game.gameState.playerState[0].stack = 0; // a is busted
+  game.createPokerRound();
+  game.distributeHoleCards();
+  game.handlePlayStart();
+  game.handleRaise(990);
+  const state = game.handleCall(980);
+  console.log(state[3]);
+  expect(state[0].board).toHaveLength(3);
+  expect(state[1].board).toHaveLength(4);
+  expect(state[2].board).toHaveLength(5);
+  expect(state).toHaveLength(4);
+  expect(game.deck.getSize()).toBe(43);
+});
+
+it('testing all-in 2', () => {
+  game.gameState.playerState[0].stack = 500; // a is busted
+  game.createPokerRound();
+  game.distributeHoleCards();
+  game.handlePlayStart();
+  game.handleRaise(500);
+  game.handleCall(490);
+  const state = game.handleFold();
+  expect(state).toHaveLength(4);
+  expect(game.deck.getSize()).toBe(41);
+  console.log(state[3]);
+  let totalMoney = 0;
+  state[3].playerState.forEach((element) => {
+    totalMoney += element.stack;
+  });
+  expect(totalMoney).toBe(2500);
 });

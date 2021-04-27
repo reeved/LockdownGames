@@ -1,31 +1,41 @@
 class CalculateShowDown {
-  constructor(board, pokerActivePlayers, cardMap, updatedStacks) {
+  constructor(board, pokerActivePlayers, foldedPlayers, allInPlayers, cardMap, updatedStacks) {
     this.sortOrder = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     this.board = board;
-    this.pokerActivePlayers = pokerActivePlayers;
+    this.activePlayers = pokerActivePlayers.concat(allInPlayers);
+    this.foldedPlayers = foldedPlayers;
     this.cardMap = cardMap;
     this.updatedStacks = updatedStacks;
     this.winningsMap = new Map(); // playerName => new Stack
     this.bestHandMap = new Map(); // playerName => best Hand
-    this.pokerActivePlayers.forEach((element) => {
+    this.activePlayers.forEach((element) => {
       this.bestHandMap.set(element.playerName, this.evaluateBestHand(element.playerName));
     });
   }
 
   distributeWinnings() {
-    while (this.pokerActivePlayers.length > 1) {
+    while (this.activePlayers.length > 1) {
       let pot = 0;
       let minStack = Number.POSITIVE_INFINITY;
-      this.pokerActivePlayers.forEach((element) => {
+      this.activePlayers.forEach((element) => {
         if (element.invested < minStack) minStack = element.invested; // getting minStack
       });
-      pot += minStack * this.pokerActivePlayers.length;
-      this.pokerActivePlayers.forEach((element) => {
+      pot += minStack * this.activePlayers.length;
+      this.foldedPlayers.forEach((element) => {
+        if (element.invested >= minStack) {
+          element.invested -= minStack;
+          pot += minStack;
+        } else {
+          pot += element.invested;
+          element.invested = 0;
+        }
+      });
+      this.activePlayers.forEach((element) => {
         element.invested -= minStack;
       });
       const winningHand = this.evaluateWinningHand();
       const winners = [];
-      this.pokerActivePlayers.forEach((element) => {
+      this.activePlayers.forEach((element) => {
         const hand1 = JSON.stringify(winningHand);
         const hand2 = JSON.stringify(this.bestHandMap.get(element.playerName));
         if (hand1 === hand2) {
@@ -35,19 +45,19 @@ class CalculateShowDown {
       winners.forEach((element) => {
         element.stack += pot / winners.length;
       });
-      let i = this.pokerActivePlayers.length - 1;
+      let i = this.activePlayers.length - 1;
       while (i > 0) {
-        if (this.pokerActivePlayers[i].invested === 0) {
-          this.updatedStacks.set(this.pokerActivePlayers[i].playerName, this.pokerActivePlayers[i].stack);
-          this.pokerActivePlayers.splice(i, 1);
+        if (this.activePlayers[i].invested === 0) {
+          this.updatedStacks.set(this.activePlayers[i].playerName, this.activePlayers[i].stack);
+          this.activePlayers.splice(i, 1);
         }
         i -= 1;
       }
       pot = 0;
     }
-    if (this.pokerActivePlayers.length === 1) {
-      this.pokerActivePlayers[0].stack += this.pokerActivePlayers[0].invested;
-      this.updatedStacks.set(this.pokerActivePlayers[0].playerName, this.pokerActivePlayers[0].stack);
+    if (this.activePlayers.length === 1) {
+      this.activePlayers[0].stack += this.activePlayers[0].invested;
+      this.updatedStacks.set(this.activePlayers[0].playerName, this.activePlayers[0].stack);
     }
     return this.updatedStacks;
   }

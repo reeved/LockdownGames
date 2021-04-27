@@ -49,6 +49,11 @@ class Game {
     return this.evaluateResult(result);
   }
 
+  handleRaise(amount) {
+    const result = this.pokerRound.handleRaise(amount);
+    return this.evaluateResult(result);
+  }
+
   evaluateResult(result) {
     if (result && result.type === 'round-over') {
       this.updateBoard();
@@ -58,14 +63,28 @@ class Game {
       this.handlePlayOver(result.updatedStacks);
       return this.gameState;
     }
+    if (result && result.type === 'all-in') {
+      return this.handleAllIn();
+    }
     return this.pokerRound;
+  }
+
+  handleAllIn() {
+    const states = [];
+    while (this.pokerRound.whichRound !== 3) {
+      this.pokerRound.roundCleanup();
+      this.updateBoard();
+      states.push(Game.clone(this.pokerRound));
+    }
+    const result = this.pokerRound.roundCleanup();
+    this.handlePlayOver(result.updatedStacks);
+    states.push(this.gameState);
+    return states;
   }
 
   handlePlayOver(updatedStacks) {
     this.gameState.updateStacks(updatedStacks);
   }
-
-  // handleRaise(amount) {}
 
   updateBoard() {
     if (this.pokerRound.whichRound === 1) {
@@ -81,6 +100,10 @@ class Game {
   reset() {
     // todo
     this.gameState = new GameState();
+  }
+
+  static clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
   }
 }
 

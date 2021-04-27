@@ -9,7 +9,7 @@ it('test distribute', () => {
   const cardMap = new Map();
   cardMap.set('Ben', { card1: 'AD', card2: 'AH' });
   cardMap.set('A', { card1: '5D', card2: '8C' });
-  const showdown = new CalculateShowDown(board, pokerActivePlayers, cardMap, new Map());
+  const showdown = new CalculateShowDown(board, pokerActivePlayers, [], [], cardMap, new Map());
   const updatedStacks = showdown.distributeWinnings();
   expect(updatedStacks.get('Ben')).toBe(1150);
   expect(updatedStacks.get('A')).toBe(200);
@@ -24,7 +24,7 @@ it('test distribute split', () => {
   const cardMap = new Map();
   cardMap.set('Ben', { card1: 'AD', card2: 'AH' });
   cardMap.set('A', { card1: '5D', card2: '8C' });
-  const showdown = new CalculateShowDown(board, pokerActivePlayers, cardMap, new Map());
+  const showdown = new CalculateShowDown(board, pokerActivePlayers, [], [], cardMap, new Map());
   const updatedStacks = showdown.distributeWinnings();
   expect(updatedStacks.get('Ben')).toBe(1100);
   expect(updatedStacks.get('A')).toBe(250);
