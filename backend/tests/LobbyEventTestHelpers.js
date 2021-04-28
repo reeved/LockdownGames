@@ -60,8 +60,8 @@ function sendAndReceiveMessage(cb, lobbyPlayers, port, lobbyCode) {
   lobbyPlayers[0].on('connect', () => {
     lobbyPlayers[0].emit('join-lobby', `Reeve`, lobbyCode);
     lobbyPlayers[0].on('join-lobby', () => {});
-    lobbyPlayers[0].emit('chat message', { msg: 'Hello World', playerNickname: 'Reeve' });
-    lobbyPlayers[0].on('chat message', (message) => {
+    lobbyPlayers[0].emit('chat-message', { msg: 'Hello World', playerNickname: 'Reeve' });
+    lobbyPlayers[0].on('chat-message', (message) => {
       return cb ? cb(message) : message;
     });
   });

@@ -48,7 +48,7 @@ const CodeNames = ({ loggedIn }) => {
               className={styles.endTurnButton}
               disabled={isGameOver}
               variant="contained"
-              onClick={() => socket.emit('change-turn', currentTeam)}
+              onClick={() => socket.emit('codenames-change-turn', currentTeam)}
             >
               End Turn
             </Button>
@@ -62,7 +62,7 @@ const CodeNames = ({ loggedIn }) => {
             <div className={styles.gameOverInfo} style={{ visibility: isGameOver ? 'visible' : 'hidden' }}>
               {/* eslint-disable-next-line no-nested-ternary */}
               <h3>{redAmount === 0 ? `Red Won!` : blueAmount === 0 ? `Blue Won!` : `${currentTeam} hit the bomb!`}</h3>
-              <Button variant="contained" onClick={() => socket.emit('new-game')}>
+              <Button variant="contained" onClick={() => socket.emit('codenames-new-game')}>
                 New Game
               </Button>
             </div>

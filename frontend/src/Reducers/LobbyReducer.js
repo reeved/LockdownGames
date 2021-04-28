@@ -84,12 +84,12 @@ export default function useLobbyState() {
     }
 
     socket.on('join-lobby', joinLobby);
-    socket.on('chat message', newChatMessage);
+    socket.on('chat-message', newChatMessage);
     socket.on('update-players', updatePlayers);
 
     return () => {
       socket.removeListener('join-lobby', joinLobby);
-      socket.removeListener('chat message', newChatMessage);
+      socket.removeListener('chat-message', newChatMessage);
       socket.removeListener('update-players', updatePlayers);
     };
   }, [state]);

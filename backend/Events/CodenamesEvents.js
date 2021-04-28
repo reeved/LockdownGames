@@ -21,7 +21,7 @@ function shuffle(array) {
 }
 
 function newGame(io, socket) {
-  socket.on('new-game', () => {
+  socket.on('codenames-new-game', () => {
     const roomID = socket.player.lobbyID;
     const numWords = 24;
     const shuffledWords = shuffle(words);
@@ -41,35 +41,35 @@ function newGame(io, socket) {
 
     boardWords = shuffle(boardWords);
 
-    io.in(roomID).emit('new-codenames', boardWords);
+    io.in(roomID).emit('codenames-new-codenames', boardWords);
   });
 }
 
 function updateSelected(io, socket) {
-  socket.on('update-selected', (id) => {
+  socket.on('codenames-update-selected', (id) => {
     const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('update-selected', id);
+    io.in(roomID).emit('codenames-update-selected', id);
   });
 }
 
 function decrementScore(io, socket) {
-  socket.on('decrement-score', (team) => {
+  socket.on('codenames-decrement-score', (team) => {
     const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('decrement-score', team);
+    io.in(roomID).emit('codenames-decrement-score', team);
   });
 }
 
 function changeTurn(io, socket) {
-  socket.on('change-turn', (currentTeam) => {
+  socket.on('codenames-change-turn', (currentTeam) => {
     const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('change-turn', currentTeam === 'Red' ? 'Blue' : 'Red');
+    io.in(roomID).emit('codenames-change-turn', currentTeam === 'Red' ? 'Blue' : 'Red');
   });
 }
 
 function setGameOver(io, socket) {
-  socket.on('game-over', () => {
+  socket.on('codenames-game-over', () => {
     const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('game-over');
+    io.in(roomID).emit('codenames-game-over');
   });
 }
 

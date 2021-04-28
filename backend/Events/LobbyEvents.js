@@ -52,11 +52,11 @@ function leaveLobby(io, socket, lobbyManager) {
 }
 
 function chatMessage(io, socket) {
-  socket.on('chat message', ({ msg, playerNickname }) => {
+  socket.on('chat-message', ({ msg, playerNickname }) => {
     const roomID = socket.player.lobbyID;
     console.log(msg);
     const message = `${playerNickname}: ${msg}`;
-    io.in(roomID).emit('chat message', message);
+    io.in(roomID).emit('chat-message', message);
   });
 }
 

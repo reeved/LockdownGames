@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 const Lobby = ({ loggedIn }) => {
   const { state: lobbyState } = useContext(LobbyContext);
   const classes = useStyles();
-  const [chosenGame, setGame] = useState('Codenames');
+  const [chosenGame, setGame] = useState('codenames');
   const [msg, setMsg] = useState('');
 
   const games = ['codenames', 'poker', 'tahi', 'scum'];
@@ -39,7 +39,7 @@ const Lobby = ({ loggedIn }) => {
 
   const sendChatMessage = () => {
     // eslint-disable-next-line no-unused-expressions
-    msg && socket.emit('chat message', { msg, playerNickname });
+    msg && socket.emit('chat-message', { msg, playerNickname });
     setMsg('');
   };
 

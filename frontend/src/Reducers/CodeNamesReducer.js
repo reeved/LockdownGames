@@ -120,18 +120,18 @@ export default function useCodenamesState() {
       });
     }
 
-    socket.on('new-codenames', newCodenamesGame);
-    socket.on('update-selected', updateSelected);
-    socket.on('decrement-score', decrementScore);
-    socket.on('game-over', setGameOver);
-    socket.on('change-turn', changeTurn);
+    socket.on('codenames-new-codenames', newCodenamesGame);
+    socket.on('codenames-update-selected', updateSelected);
+    socket.on('codenames-decrement-score', decrementScore);
+    socket.on('codenames-game-over', setGameOver);
+    socket.on('codenames-change-turn', changeTurn);
 
     return () => {
-      socket.removeListener('new-codenames', newCodenamesGame);
-      socket.removeListener('update-selected', updateSelected);
-      socket.removeListener('decrement-score', decrementScore);
-      socket.removeListener('game-over', setGameOver);
-      socket.removeListener('change-turn', changeTurn);
+      socket.removeListener('codenames-new-codenames', newCodenamesGame);
+      socket.removeListener('codenames-update-selected', updateSelected);
+      socket.removeListener('codenames-decrement-score', decrementScore);
+      socket.removeListener('codenames-game-over', setGameOver);
+      socket.removeListener('codenames-change-turn', changeTurn);
     };
   }, [state]);
 

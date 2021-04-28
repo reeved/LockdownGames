@@ -49,19 +49,19 @@ const Word = ({ item }) => {
   });
 
   const handleWordClick = (el) => {
-    socket.emit('update-selected', el.id);
+    socket.emit('codenames-update-selected', el.id);
     if (el.status === 'bomb') {
-      socket.emit('game-over');
+      socket.emit('codenames-game-over');
     } else if (el.status === 'unsafe' || el.status !== currentTeam) {
       if (el.status !== currentTeam) {
-        socket.emit('decrement-score', el.status);
+        socket.emit('codenames-decrement-score', el.status);
       }
-      socket.emit('change-turn', currentTeam);
+      socket.emit('codenames-change-turn', currentTeam);
     } else if (el.status === 'Red' || el.status === 'Blue') {
       if ((el.status === 'Red' && gameState.redScore === 1) || (el.status === 'Blue' && gameState.blueScore === 1)) {
-        socket.emit('game-over', el.status);
+        socket.emit('codenames-game-over', el.status);
       }
-      socket.emit('decrement-score', el.status);
+      socket.emit('codenames-decrement-score', el.status);
     }
   };
 
