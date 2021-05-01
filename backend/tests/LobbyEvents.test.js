@@ -124,7 +124,8 @@ describe('LobbyEvent Socket Testing', () => {
   test('Sending and Receiving Chat Messages', (done) => {
     function callback(message) {
       try {
-        expect(message).toBe('Reeve: Hello World');
+        expect(message.sender).toBe('Reeve:');
+        expect(message.msg).toBe('Hello World');
         done();
       } catch (error) {
         done(error);

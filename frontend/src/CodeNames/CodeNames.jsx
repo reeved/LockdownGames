@@ -1,16 +1,14 @@
 import { useContext, React } from 'react';
 import { Redirect } from 'react-router-dom';
-import { CircularProgress, Button } from '@material-ui/core';
+import { CircularProgress, Button, makeStyles } from '@material-ui/core';
 import styles from './WordBoard.module.css';
-import { LobbyContext, CodenamesContext } from '../Context';
+import { CodenamesContext } from '../Context';
 import socket from '../Socket';
 import Word from './Word';
 
 const CodeNames = ({ loggedIn }) => {
   const { state: gameState, dispatch } = useContext(CodenamesContext);
-  const { state: lobbyState } = useContext(LobbyContext);
 
-  const { nickname } = lobbyState;
   const currentTeam = gameState.currentTurn;
   const redAmount = gameState.redScore;
   const blueAmount = gameState.blueScore;
@@ -21,11 +19,35 @@ const CodeNames = ({ loggedIn }) => {
     dispatch({ type: 'toggle-spymaster' });
   };
 
+  const useStyles = makeStyles({
+    endButton: {
+      height: '2.5em',
+      fontSize: 'calc(5px + 1vmin)',
+      color: 'white',
+      backgroundColor: currentTeam === 'Red' ? 'firebrick' : 'royalblue',
+      '&:hover': {
+        backgroundColor: currentTeam === 'Red' ? '#c96464' : '#7a96ea',
+      },
+    },
+    spyMasterButton: {
+      marginTop: '1em',
+    },
+    newGameButton: {
+      color: 'white',
+      backgroundColor: '#F72585',
+      '&:hover': {
+        backgroundColor: '#f966a8',
+      },
+    },
+  });
+
+  const classes = useStyles();
+
   if (!loggedIn) {
     return <Redirect to="/" />;
   }
   return (
-    <div>
+    <>
       {!wordList ? (
         <>
           <h1>Game is loading...</h1>
@@ -33,7 +55,6 @@ const CodeNames = ({ loggedIn }) => {
         </>
       ) : (
         <>
-          <h1>CODENAMES</h1>
           <div className={styles.WordBoardContainer}>
             <div className={styles.currentScoreIndicator} style={{ fontWeight: 'bold' }}>
               <span style={{ color: 'firebrick' }}>{redAmount}</span>
@@ -45,7 +66,7 @@ const CodeNames = ({ loggedIn }) => {
               style={{ color: currentTeam === 'Red' ? 'firebrick' : 'royalblue' }}
             >{`${currentTeam}'s turn`}</p>
             <Button
-              className={styles.endTurnButton}
+              className={`${styles.endTurnButton} ${classes.endButton}`}
               disabled={isGameOver}
               variant="contained"
               onClick={() => socket.emit('codenames-change-turn', currentTeam)}
@@ -56,23 +77,26 @@ const CodeNames = ({ loggedIn }) => {
             {wordList.map((item) => (
               <Word item={item} key={item.id} />
             ))}
-            <p>
-              Your name: <span style={{ fontWeight: 'bold' }}>{nickname}</span>
-            </p>
+
             <div className={styles.gameOverInfo} style={{ visibility: isGameOver ? 'visible' : 'hidden' }}>
               {/* eslint-disable-next-line no-nested-ternary */}
               <h3>{redAmount === 0 ? `Red Won!` : blueAmount === 0 ? `Blue Won!` : `${currentTeam} hit the bomb!`}</h3>
-              <Button variant="contained" onClick={() => socket.emit('codenames-new-game')}>
+              <Button className={classes.newGameButton} variant="contained" onClick={() => socket.emit('codenames-new-game')}>
                 New Game
               </Button>
             </div>
-            <Button className={styles.spyMasterBtn} variant="contained" disabled={isGameOver} onClick={() => handleSpyMasterBtn()}>
+            <Button
+              className={`${styles.spyMasterBtn} ${classes.spyMasterButton}`}
+              variant="contained"
+              disabled={isGameOver}
+              onClick={() => handleSpyMasterBtn()}
+            >
               Spymaster
             </Button>
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 

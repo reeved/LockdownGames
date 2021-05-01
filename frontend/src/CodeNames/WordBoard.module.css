@@ -1,18 +1,25 @@
 .WordBoardContainer {
   display: grid;
   position: relative;
+  height: 100%;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 2em 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
+.gameOverInfo {
+  align-self: end;
+}
+
 .currentScoreIndicator {
   grid-column-start: 1;
+  font-size: calc((7vmin - 1rem) / 3);
 }
 
 .currentTurnIndicator {
   grid-column-start: 2;
   text-transform: capitalize;
   margin: 0;
+  margin-bottom: 1em;
 }
 
 .endTurnButton {
@@ -58,8 +65,7 @@
   .WordBoardContainer {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 2em 6em 6em 6em 6em 6em;
-    height: 75vh;
+    grid-template-rows: 3em 1fr 1fr 1fr 1fr 1fr;
   }
 
   .currentTurnIndicator,

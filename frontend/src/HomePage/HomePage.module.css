@@ -20,7 +20,7 @@
   }
 }
 
-h1 {
+.container > h1 {
   margin-bottom: 4em;
 }
 

@@ -1,0 +1,14 @@
+.gameInfo {
+  background-color: rgb(48, 48, 48);
+}
+
+.Chat {
+  background-color: rgb(48, 48, 48);
+  padding: 1%;
+  height: 100%;
+  border-radius: 1.5%;
+}
+
+.Chat > h3 {
+  color: #5390d9;
+}

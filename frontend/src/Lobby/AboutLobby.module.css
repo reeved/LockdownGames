@@ -1,0 +1,14 @@
+.infoContainer {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  color: darkgrey;
+  overflow-y: auto;
+}
+
+.subHeading {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #64dfdf;
+}

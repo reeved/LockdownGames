@@ -6,8 +6,7 @@ import usePokerState from './Reducers/PokerReducer';
 
 import HomePage from './HomePage/HomePage';
 import Lobby from './Lobby/Lobby';
-import CodeNames from './CodeNames/CodeNames';
-import Poker from './Poker/Poker';
+import GameEnvironment from './GameEnvironment/GameEnvironment';
 
 const WebsiteRoutes = () => {
   const { state: stateCodenames, dispatch: codenamesDispatch } = useCodenamesState();
@@ -28,12 +27,12 @@ const WebsiteRoutes = () => {
       </Route>
       <Route path="/codenames">
         <CodenamesContext.Provider value={{ state: stateCodenames, dispatch: codenamesDispatch }}>
-          <CodeNames loggedIn={loggedIn} />
+          <GameEnvironment loggedIn={loggedIn} component="codenames" />
         </CodenamesContext.Provider>
       </Route>
       <Route path="/poker">
         <PokerContext.Provider value={{ state: pokerState, dispatch: pokerDispatch }}>
-          <Poker loggedIn={loggedIn} />
+          <GameEnvironment loggedIn={loggedIn} component="poker" />
         </PokerContext.Provider>
       </Route>
       <Route>

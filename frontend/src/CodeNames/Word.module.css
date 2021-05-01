@@ -1,10 +1,8 @@
 .Word {
   padding: 2em 0 2em 0;
-  justify-self: center;
-  width: 24vw;
-  min-width: 24vw;
+  justify-self: stretch;
   margin: 0.5em;
-  font-size: 0.78em;
+  font-size: calc((7vmin - 1rem) / 3);
   line-height: 1;
   background-color: white;
   color: black;
@@ -23,13 +21,6 @@
 @media only screen and (min-width: 660px) {
   .Word {
     padding: 2em 0 2em 0;
-    justify-self: center;
-    width: 8vw;
-    min-width: 130px;
-    font-size: 1em;
-    background-color: white;
-    color: black;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 }
 
@@ -37,13 +28,6 @@
 @media only screen and (min-width: 1000px) {
   .Word {
     padding: 2em 0 2em 0;
-    justify-self: center;
-    width: 8vw;
-    min-width: 130px;
-    font-size: 1em;
-    background-color: white;
-    color: black;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 }
 

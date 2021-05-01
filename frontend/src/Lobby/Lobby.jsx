@@ -2,122 +2,90 @@
 /* eslint-disable react/no-array-index-key */
 import { React, useState, useContext } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { Grid, TextField, Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import styles from './Lobby.module.css';
 import socket from '../Socket';
 import { LobbyContext } from '../Context';
-
-const useStyles = makeStyles({
-  textField: {
-    width: '80%',
-  },
-  input: {
-    fontSize: 'calc(10px + 1vmin)',
-    backgroundColor: 'white',
-  },
-  button: {
-    width: '100%',
-    fontSize: 'calc(10px + 1vmin)',
-    backgroundColor: 'tan',
-    '&:hover': {
-      backgroundColor: 'navajowhite',
-    },
-  },
-});
+import Chatbox from '../Common/Chatbox';
+import AboutLobby from './AboutLobby';
 
 const Lobby = ({ loggedIn }) => {
   const { state: lobbyState } = useContext(LobbyContext);
-  const classes = useStyles();
   const [chosenGame, setGame] = useState('codenames');
-  const [msg, setMsg] = useState('');
 
-  const games = ['codenames', 'poker', 'tahi', 'scum'];
+  const games = ['codenames', 'poker', 'lastcard'];
 
-  const playerNickname = lobbyState.nickname;
   const players = lobbyState.players;
-  const lobbyID = lobbyState.lobbyID;
 
-  const sendChatMessage = () => {
-    // eslint-disable-next-line no-unused-expressions
-    msg && socket.emit('chat-message', { msg, playerNickname });
-    setMsg('');
-  };
+  const useStyles = makeStyles({
+    startButton: {
+      width: '50%',
+      marginTop: '3em',
+      fontSize: 'calc(5px + 1vmin)',
+      color: 'white',
+      backgroundColor: '#F72585',
+      '&:hover': {
+        backgroundColor: '#f966a8',
+      },
+      flexGrow: '1',
+    },
+  });
+
+  const classes = useStyles();
 
   if (!loggedIn) {
     return <Redirect to="/" />;
   }
   return (
-    <div className={styles.container}>
+    <Container fluid className={styles.container}>
       <h1>LOBBY</h1>
-      <div className={styles.gameContainer}>
-        <h2 className={styles.subheader}>Select Game</h2>
-        <div className={styles.gamesList}>
-          {games.map((game, index) => (
-            <div
-              key={index}
-              className={`${styles.game} ${chosenGame === game && styles.activeGame}`}
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => setGame(game)}
-              onClick={() => setGame(game)}
-            >
-              {game}
-            </div>
-          ))}
-        </div>
-      </div>
-      <Grid container spacing={5}>
-        <Grid container item lg={4} alignItems="stretch">
-          <div className={`${styles.moreInfo} ${styles.aboutGame}`}>
-            <h2 className={styles.subheader}>About Game</h2>
-            <h3>{`Your Name: ${playerNickname}`}</h3>
-            <h3>{`Lobby ID: ${lobbyID}`}</h3>
-            <Link to={`/${chosenGame}`} style={{ textDecoration: 'none' }}>
-              <Button size="large" variant="contained" onClick={() => socket.emit(`${chosenGame}-new-game`)}>
-                Start Game
-              </Button>
-            </Link>
-          </div>
-        </Grid>
-        <Grid container item lg={4} alignItems="stretch">
-          <div className={`${styles.moreInfo} ${styles.lobbyPlayers}`}>
-            <h2 className={styles.subheader}>Players in Lobby</h2>
+      <Row className={styles.gamesRow}>
+        <Col xs={12}>
+          <h2 className={styles.subheader}>Choose a Game</h2>
+        </Col>
+        {games.map((game, index) => (
+          <Col
+            key={index}
+            xs={3}
+            className={`${styles.game} ${chosenGame === game && styles.activeGame}`}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => setGame(game)}
+            onClick={() => setGame(game)}
+          >
+            {game === 'lastcard' ? 'Last Card' : game}
+          </Col>
+        ))}
+      </Row>
+      <Row className={styles.moreInfo}>
+        <Col className="flexCol">
+          <h2 className={styles.subheader}>About Lobby</h2>
+          <AboutLobby />
+          <Link to={`/${chosenGame}`} style={{ textDecoration: 'none' }}>
+            <Button className={classes.startButton} size="large" variant="contained" onClick={() => socket.emit(`${chosenGame}-new-game`)}>
+              Start Game
+            </Button>
+          </Link>
+        </Col>
+        <Col className="flexCol">
+          <h2 className={styles.subheader}>Players in Lobby ({players.length})</h2>
+          <div className={styles.listContainer}>
             {players.map((player, index) => (
               <p className={styles.playerList} key={index}>
                 {player}
               </p>
             ))}
           </div>
-        </Grid>
-        <Grid container item lg={4} alignItems="stretch">
-          <div className={`${styles.moreInfo} ${styles.chat}`}>
-            <h2 className={styles.subheader}>Chat</h2>
-            <div className={styles.chatBox}>
-              {lobbyState.chatMessages.map((el, index) => (
-                <p className={styles.chatMessages} key={index}>
-                  {el}
-                </p>
-              ))}
-            </div>
-            <div className={styles.chatInputs}>
-              <TextField
-                variant="outlined"
-                style={{ width: '70%' }}
-                className={classes.textField}
-                InputProps={{
-                  className: `${classes.input}`,
-                }}
-                value={msg}
-                onChange={(e) => setMsg(e.target.value)}
-              />
-              <Button variant="contained" style={{ width: '25%' }} className={classes.button} onClick={() => sendChatMessage()}>
-                Submit
-              </Button>
-            </div>
-          </div>
-        </Grid>
-      </Grid>
-    </div>
+        </Col>
+        <Col className="flexCol">
+          <h2 className={styles.subheader}>Chat</h2>
+          <Chatbox />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

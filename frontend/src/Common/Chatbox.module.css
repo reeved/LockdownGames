@@ -1,0 +1,29 @@
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex-grow: 1;
+  height: 80%;
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background-color: white;
+  text-align: start;
+  word-break: break-all;
+  white-space: pre-wrap;
+  padding: 0 1em;
+  flex-grow: 1;
+}
+
+.chatMessages {
+  font-size: calc(5px + 1vmin);
+  padding-bottom: 0.6em;
+}
+
+.chatInputs {
+  display: flex;
+  gap: 1em;
+}
