@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 const loadCodenamesEvents = require('./Events/CodenamesEvents');
 const loadLobbyEvents = require('./Events/LobbyEvents');
 const loadPokerEvents = require('./Events/PokerEvents');
+const loadLastCardEvents = require('./Events/LastCardEvents');
 const LobbyManager = require('./Domain/LobbyManager');
 
 const lobbyManager = new LobbyManager();
@@ -29,6 +30,7 @@ io.on('connection', (socket) => {
   loadCodenamesEvents(io, socket);
   loadLobbyEvents(io, socket, lobbyManager);
   loadPokerEvents(io, socket, lobbyManager);
+  loadLastCardEvents(io, socket, lobbyManager);
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

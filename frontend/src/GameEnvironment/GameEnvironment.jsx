@@ -7,6 +7,7 @@ import Chatbox from '../Common/Chatbox';
 import CodeNames from '../CodeNames/CodeNames';
 import Poker from '../Poker/Poker';
 import styles from './GameEnvironment.module.css';
+import LastCard from '../LastCard/LastCard';
 // import { LobbyContext } from '../Context';
 
 // eslint-disable-next-line arrow-body-style
@@ -18,6 +19,8 @@ const GameEnv = ({ loggedIn, component }) => {
     calledComponent = <CodeNames loggedIn={loggedIn} />;
   } else if (component === 'poker') {
     calledComponent = <Poker loggedIn={loggedIn} />;
+  } else if (component === 'lastcard') {
+    calledComponent = <LastCard loggedIn={loggedIn} />;
   }
 
   return (

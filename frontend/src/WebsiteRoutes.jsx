@@ -1,8 +1,9 @@
 import { React, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { LobbyContext, CodenamesContext, PokerContext } from './Context';
+import { LobbyContext, CodenamesContext, PokerContext, LastCardContext } from './Context';
 import useCodenamesState from './Reducers/CodeNamesReducer';
 import usePokerState from './Reducers/PokerReducer';
+import uselastCardState from './Reducers/lastCardReducer';
 
 import HomePage from './HomePage/HomePage';
 import Lobby from './Lobby/Lobby';
@@ -14,6 +15,8 @@ const WebsiteRoutes = () => {
   const { state: lobbyState } = useContext(LobbyContext);
 
   const { state: pokerState, dispatch: pokerDispatch } = usePokerState();
+
+  const { state: LastCardState, dispatch: LastCardDispatch } = uselastCardState();
 
   const loggedIn = lobbyState.lobbyID;
 
@@ -34,6 +37,11 @@ const WebsiteRoutes = () => {
         <PokerContext.Provider value={{ state: pokerState, dispatch: pokerDispatch }}>
           <GameEnvironment loggedIn={loggedIn} component="poker" />
         </PokerContext.Provider>
+      </Route>
+      <Route path="/lastcard">
+        <LastCardContext.Provider value={{ state: LastCardState, dispatch: LastCardDispatch }}>
+          <GameEnvironment loggedIn={loggedIn} component="lastcard" />
+        </LastCardContext.Provider>
       </Route>
       <Route>
         <HomePage />

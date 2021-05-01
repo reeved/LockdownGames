@@ -22,6 +22,16 @@ class Deck {
     };
   }
 
+  getLastCardHand() {
+    const hand = [];
+
+    for (let i = 0; i < 7; i += 1) {
+      hand.push(this.getACard());
+    }
+
+    return hand;
+  }
+
   getACard() {
     const cardArray = this.state.splice(-1, 1);
     return cardArray[0].getValue() + cardArray[0].getSuit();
