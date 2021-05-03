@@ -38,6 +38,8 @@ const HomePage = () => {
 
   const classes = useStyles({ lobbyCode });
 
+  const userHasInput = (nickname || lobbyCode);
+
   const handleBtnClick = () => {
     if (lobbyCode) {
       socket.emit('join-lobby', nickname, lobbyCode);
@@ -56,6 +58,7 @@ const HomePage = () => {
       setNickname(text);
     }
   };
+
 
   if (lobbyState.lobbyID) {
     return <Redirect to="/lobby" />;
@@ -98,9 +101,9 @@ const HomePage = () => {
           />
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
-          <Button type="button" className={`${classes.button}`} variant="contained" disabled={!nickname || nicknameError} onClick={handleBtnClick}>
+        {userHasInput && <Button type="button" className={`${classes.button}`} variant="contained" disabled={nicknameError || !nickname} onClick={handleBtnClick}>
             {lobbyCode ? `Join Lobby` : `Create Lobby`}
-          </Button>
+          </Button>}
         </Grid>
       </Grid>
       <p>{lobbyState.validID}</p>

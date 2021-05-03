@@ -17,6 +17,11 @@
   }
 }
 
+img {
+  height: 50px;
+  width: 50px;
+}
+
 .App-content {
   display: flex;
   flex-grow: 1;
