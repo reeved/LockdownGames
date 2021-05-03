@@ -1,6 +1,9 @@
 .App {
   text-align: center;
-  background-color: mintcream;
+  background-color: rgb(37, 39, 38);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .App-logo {
@@ -14,14 +17,15 @@
   }
 }
 
-.App-header {
-  min-height: 90vh;
+.App-content {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 1em;
   color: black;
+  z-index: 100;
 }
 
 ::-webkit-scrollbar {
@@ -47,4 +51,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+/* suggested css */
+#tsparticles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
 }

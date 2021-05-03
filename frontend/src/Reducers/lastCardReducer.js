@@ -2,11 +2,33 @@ import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
 const initialState = {
-  playersState: [],
-  ownCards: [],
-  lastPlayed: null,
-  currentTurn: null,
-  totalPickUp: 0,
+  playersState: [
+    {
+      name: 'Reeve',
+      handSize: 3,
+      isPlaying: true,
+    },
+    {
+      name: 'Callum',
+      handSize: 5,
+      isPlaying: true,
+    },
+    {
+      name: 'Ben',
+      handSize: 1,
+      isPlaying: true,
+    },
+    {
+      name: 'Daniel',
+      handSize: 3,
+      isPlaying: true,
+    },
+  ],
+  ownCards: ['AH', 'QD', '4S', '7C', '2D'],
+  lastPlayed: '4C',
+  currentTurn: 'Callum',
+  totalPickUp: 2,
+  selectedCards: [],
 };
 
 const reducer = (state, action) => {
@@ -53,6 +75,14 @@ const reducer = (state, action) => {
     case 'player-finished': {
       return {
         ...state,
+      };
+    }
+
+    case 'set-selected': {
+      console.log('Got dispatched. ', action.cards);
+      return {
+        ...state,
+        selectedCards: action.cards,
       };
     }
 

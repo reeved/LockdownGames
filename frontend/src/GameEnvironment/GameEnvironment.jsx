@@ -15,21 +15,20 @@ const GameEnv = ({ loggedIn, component }) => {
   // const { state: lobbyState } = useContext(LobbyContext);
 
   let calledComponent;
-  if (component === 'codenames') {
+  if (component === 'Codenames') {
     calledComponent = <CodeNames loggedIn={loggedIn} />;
-  } else if (component === 'poker') {
+  } else if (component === 'Poker') {
     calledComponent = <Poker loggedIn={loggedIn} />;
-  } else if (component === 'lastcard') {
+  } else if (component === 'Last Card') {
     calledComponent = <LastCard loggedIn={loggedIn} />;
   }
 
   return (
     <>
-      <Container fluid style={{ maxWidth: '90vw' }}>
-        <h1>{component.toUpperCase()}</h1>
-        <Row style={{ height: '60vh' }}>
+      <Container fluid style={{ maxWidth: '90vw', height: '80%' }}>
+        <Row style={{ height: '100%' }}>
           <Col className={`${styles.Chat} flexCol`}>
-            <h3>GAME INFO</h3>
+            <h3>{component}</h3>
             <GameInfo />
           </Col>
           <Col xs={7}>{calledComponent}</Col>

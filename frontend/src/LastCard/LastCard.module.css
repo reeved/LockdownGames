@@ -1,0 +1,75 @@
+.lastcardContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  background: radial-gradient(circle, #2a6f97 11%, #013a63 100%);
+  border-radius: 1.5%;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 1em 0;
+}
+
+.midRow {
+  display: flex;
+  flex-grow: 1;
+}
+
+.bottomRow {
+  display: flex;
+  border-radius: 1em;
+  margin: 0;
+  padding-bottom: 1em;
+}
+
+.opponent {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-width: 20%;
+}
+
+.playerReverse {
+  flex-direction: column-reverse;
+}
+
+.board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardImage {
+  height: 14vmin;
+  width: 10vmin;
+  -webkit-user-drag: none;
+}
+
+.cardImage:not(:first-of-type) {
+  margin-left: 0.5em;
+}
+
+.drawPile {
+  position: absolute;
+  margin-left: 0 !important;
+}
+
+.drawPile:last-child:hover {
+  filter: sepia(0.5) saturate(2);
+  cursor: pointer;
+}
+
+.lastPlayed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc((20vmin - 1rem) / 4);
+}
+
+.lastPlayed > .cardImage:hover {
+  filter: sepia(0.5) saturate(2);
+  cursor: pointer;
+}

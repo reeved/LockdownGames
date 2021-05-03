@@ -30,17 +30,17 @@ const WebsiteRoutes = () => {
       </Route>
       <Route path="/codenames">
         <CodenamesContext.Provider value={{ state: stateCodenames, dispatch: codenamesDispatch }}>
-          <GameEnvironment loggedIn={loggedIn} component="codenames" />
+          <GameEnvironment loggedIn={loggedIn} component="Codenames" />
         </CodenamesContext.Provider>
       </Route>
       <Route path="/poker">
         <PokerContext.Provider value={{ state: pokerState, dispatch: pokerDispatch }}>
-          <GameEnvironment loggedIn={loggedIn} component="poker" />
+          <GameEnvironment loggedIn={loggedIn} component="Poker" />
         </PokerContext.Provider>
       </Route>
       <Route path="/lastcard">
         <LastCardContext.Provider value={{ state: LastCardState, dispatch: LastCardDispatch }}>
-          <GameEnvironment loggedIn={loggedIn} component="lastcard" />
+          <GameEnvironment loggedIn={loggedIn} component="Last Card" />
         </LastCardContext.Provider>
       </Route>
       <Route>
