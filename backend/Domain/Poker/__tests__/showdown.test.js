@@ -15,6 +15,28 @@ it('test distribute', () => {
   expect(updatedStacks.get('A')).toBe(200);
 });
 
+it('test showdown - four of a kind', () => {
+  const { justValues, type } = CalculateShowDown.checkFourOfAKind(['3', '3', '3', '3', '10']);
+  expect(justValues).toStrictEqual(['10', '3', '3', '3', '3']);
+  expect(type).toBe('four-of-a-kind');
+});
+
+it('test showdown - flush', () => {
+  const isFlush = CalculateShowDown.checkFlush(['S', 'S', 'S', 'S', 'S']);
+  expect(isFlush).toBe(true);
+});
+
+it('test showdown - flush fail', () => {
+  const isFlush = CalculateShowDown.checkFlush(['D', 'S', 'S', 'S', 'S']);
+  expect(isFlush).toBe(false);
+});
+
+it('test showdown - twoPair', () => {
+  const { justValues, type } = CalculateShowDown.checkTwoPair(['2', '2', '3', 'K', 'K']);
+  expect(justValues).toStrictEqual(['3', '2', '2', 'K', 'K']);
+  expect(type).toBe('two-pair');
+});
+
 // eslint-disable-next-line jest/no-focused-tests
 it('test distribute split', () => {
   const board = ['2H', '3D', '4S', '5S', '6D'];

@@ -2,9 +2,8 @@ import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
 const initialState = {
-  playerName: null,
   cardMap: new Map(),
-  playState: null,
+  pokerRound: null,
   gameState: null,
   result: null,
 };
@@ -17,68 +16,73 @@ const reducer = (state, action) => {
       };
     }
 
-    case 'setPlayerName': {
-      console.log(`setting playerName ${action.playerName}`);
-      return {
-        ...state,
-        playerName: action.playerName,
-      };
-    }
-
-    case 'setGameState': {
-      console.log('Setting gameState');
+    case 'poker-game-state': {
+      console.log('Setting gameState', action.gameState);
+      state.cardMap.clear();
       return {
         ...state,
         gameState: action.gameState,
+        pokerRound: null,
       };
     }
 
-    case 'setHoleCards': {
+    case 'poker-hole-cards': {
+      console.log('Setting hole cards');
       const newCardMap = new Map(state.cardMap);
-      newCardMap.set(state.playerName, action.holeCards);
+      newCardMap.set(action.playerName, action.holeCards);
       return {
         ...state,
         cardMap: newCardMap,
       };
     }
 
+    case 'poker-round': {
+      console.log('Setting poker round', action.pokerRound);
+      return {
+        ...state,
+        pokerRound: action.pokerRound,
+      };
+    }
+
     default:
-      throw new Error(`Invalid Game State reducer action: ${action.type}`);
+      throw new Error(`Invalid Poker State reducer action: ${action.type}`);
   }
 };
 
 export default function usePokerState() {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    function setPlayerName(playerName) {
-      dispatch({
-        type: 'setPlayerName',
-        playerName,
-      });
-    }
-
     function setGameState(gameState) {
       dispatch({
-        type: 'setGameState',
+        type: 'poker-game-state',
         gameState,
       });
     }
 
-    function setHoleCards(holeCards) {
+    function setHoleCards({ playerName, holeCards }) {
+      console.log(playerName, holeCards);
       dispatch({
-        type: 'setHoleCards',
+        type: 'poker-hole-cards',
+        playerName,
         holeCards,
       });
     }
 
-    socket.on('setPlayerName', setPlayerName);
-    socket.on('setGameState', setGameState);
-    socket.on('setHoleCards', setHoleCards);
+    function setPokerRound(pokerRound) {
+      dispatch({
+        type: 'poker-round',
+        pokerRound,
+      });
+    }
+
+    socket.on('poker-game-state', setGameState);
+    socket.on('poker-hole-cards', setHoleCards);
+    socket.on('poker-round', setPokerRound);
 
     return () => {
-      socket.removeListener('setPlayerName', setPlayerName);
-      socket.removeListener('setGameState', setGameState);
-      socket.removeListener('setHoleCards', setHoleCards);
+      socket.removeListener('poker-game-state', setGameState);
+      socket.removeListener('poker-hole-cards', setHoleCards);
+      socket.removeListener('poker-round', setPokerRound);
     };
   }, [state]);
 

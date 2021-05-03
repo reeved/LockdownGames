@@ -9,9 +9,20 @@ class GameState {
     this.gameFinished = false;
     this.dealerNumber = 0;
     this.playerState = [];
+    this.stackTrack = new Map();
+    this.roundTrack = [0];
     players.forEach((element) => {
       this.playerState.push(new PokerPlayer(element.nickname, STARTING_STACK, element.socketID));
+      this.stackTrack.set(element.nickname, [1000]);
     });
+  }
+
+  isGameOver() {
+    let activePlayers = 0;
+    this.playerState.forEach((element) => {
+      if (element.stack !== 0) activePlayers += 1;
+    });
+    return activePlayers < 2;
   }
 
   createPokerRound() {
@@ -27,9 +38,16 @@ class GameState {
   }
 
   updateStacks(updatedStacks) {
+    do {
+      this.dealerNumber = (this.dealerNumber + 1) % this.playerState.length;
+    } while (this.playerState[this.dealerNumber].stack === 0);
+    this.roundTrack.push(this.roundTrack[this.roundTrack.length - 1] + 1);
     this.playerState.forEach((element) => {
       if (updatedStacks.has(element.playerName)) {
         element.stack = updatedStacks.get(element.playerName);
+        this.stackTrack.get(element.playerName).push(element.stack);
+      } else {
+        this.stackTrack.get(element.playerName).push(0);
       }
     });
   }

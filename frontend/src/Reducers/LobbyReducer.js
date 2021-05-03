@@ -2,6 +2,7 @@ import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
 const initialState = {
+  gameStarted: null, // if game started => game name e.g. poker
   nickname: 'Anon',
   lobbyID: false,
   isHost: false,
@@ -39,6 +40,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         chatMessages: [...state.chatMessages, action.msg],
+      };
+    }
+
+    case 'game-started': {
+      return {
+        ...state,
+        gameStarted: action.gameName,
       };
     }
 
@@ -83,14 +91,23 @@ export default function useLobbyState() {
       });
     }
 
+    function setGameStarted(gameName) {
+      dispatch({
+        type: 'game-started',
+        gameName,
+      });
+    }
+
     socket.on('join-lobby', joinLobby);
     socket.on('chat-message', newChatMessage);
     socket.on('update-players', updatePlayers);
+    socket.on('game-started', setGameStarted);
 
     return () => {
       socket.removeListener('join-lobby', joinLobby);
       socket.removeListener('chat-message', newChatMessage);
       socket.removeListener('update-players', updatePlayers);
+      socket.removeListener('game-started', setGameStarted);
     };
   }, [state]);
 

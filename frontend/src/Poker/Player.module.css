@@ -1,0 +1,94 @@
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 25%;
+}
+
+.opponentContainer {
+  display: flex;
+  flex-direction: column;
+  /* flex-grow: 1; */
+  width: 8em;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* flex-grow: 1; */
+}
+
+.playerRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.mainInfo {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #303030;
+  color: white;
+  border-radius: 1em;
+  padding: 0.5em;
+  box-shadow: 0px 0px 15px 1px #002855;
+  border: 2px solid transparent;
+}
+
+.isOnAction {
+  border: 2px solid yellow;
+}
+
+.opponentCards {
+  display: flex;
+  flex-grow: 1;
+  height: 56px;
+  justify-content: center;
+}
+
+.playerCards {
+  display: flex;
+  flex-grow: 1;
+  height: 84px;
+  justify-content: center;
+}
+
+.dealerButton {
+  height: 50px;
+  width: 50px;
+}
+
+.betContainer {
+  display: flex;
+  height: 65px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bet {
+  display: flex;
+  /* flex-grow: 1; */
+  justify-content: center;
+  align-items: center;
+  background-color: purple;
+  border-radius: 50%;
+  padding: 2.5em;
+  height: 0;
+  width: 0;
+  margin: auto;
+  font-size: calc((7vmin - 1rem) / 5);
+}
+
+.cardImage {
+  height: 56px;
+  width: 40px;
+}
+
+.ownCardImage {
+  height: 84px;
+  width: 60px;
+}
+
+.cardImage:first-of-type {
+  margin-right: 0.5em;
+}

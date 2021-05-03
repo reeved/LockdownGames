@@ -20,6 +20,7 @@ class Game {
       const { card1, card2 } = this.deck.getHoleCards();
       holeCards.push({
         socketID: element.socketID,
+        playerName: element.playerName,
         card1,
         card2,
       });

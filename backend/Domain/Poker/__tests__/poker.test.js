@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable jest/no-focused-tests */
 import Game from '../Game';
 import PokerPlayer from '../PokerPlayer';
@@ -83,6 +84,7 @@ it('testing handleFold 2 players', () => {
   expect(gameState instanceof GameState).toBe(true);
   expect(gameState.playerState[1].stack).toBe(990);
   expect(gameState.playerState[2].stack).toBe(1010);
+  console.log(gameState.stackTrack);
 });
 
 it('testing handleCheck - into flop', () => {
@@ -114,7 +116,7 @@ it('testing handleCheck - showdown', () => {
     game.handleCheck();
   }
   const gameState = game.handleCheck();
-  // console.log(gameState);
+  console.log(gameState);
 });
 
 it('testing handleCall no major update', () => {
@@ -143,6 +145,7 @@ it('testing all-in', () => {
   game.handlePlayStart();
   game.handleRaise(990);
   const state = game.handleCall(980);
+  console.log(state);
   console.log(state[3]);
   expect(state[0].board).toHaveLength(3);
   expect(state[1].board).toHaveLength(4);

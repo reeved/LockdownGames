@@ -61,9 +61,17 @@ function chatMessage(io, socket) {
   });
 }
 
+function gameStarted(io, socket) {
+  socket.on('start-game', (chosenGame) => {
+    const { lobbyID } = socket.player;
+    io.in(lobbyID).emit('game-started', chosenGame);
+  });
+}
+
 module.exports = function exp(io, socket, lobbyManager) {
   createLobby(io, socket, lobbyManager);
   joinLobby(io, socket, lobbyManager);
   chatMessage(io, socket, lobbyManager);
   leaveLobby(io, socket, lobbyManager);
+  gameStarted(io, socket);
 };

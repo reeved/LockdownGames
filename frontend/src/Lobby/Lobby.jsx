@@ -36,6 +36,15 @@ const Lobby = ({ loggedIn }) => {
 
   const classes = useStyles();
 
+  const handleStartGameButton = () => {
+    socket.emit('start-game', chosenGame);
+    socket.emit(`${chosenGame}-new-game`);
+  };
+
+  if (lobbyState.gameStarted) {
+    return <Redirect to={`/${lobbyState.gameStarted}`} />;
+  }
+
   if (!loggedIn) {
     return <Redirect to="/" />;
   }
@@ -65,7 +74,7 @@ const Lobby = ({ loggedIn }) => {
           <h2 className={styles.subheader}>About Lobby</h2>
           <AboutLobby />
           <Link to={`/${chosenGame}`} style={{ textDecoration: 'none' }}>
-            <Button className={classes.startButton} size="large" variant="contained" onClick={() => socket.emit(`${chosenGame}-new-game`)}>
+            <Button className={classes.startButton} size="large" variant="contained" onClick={() => handleStartGameButton()}>
               Start Game
             </Button>
           </Link>

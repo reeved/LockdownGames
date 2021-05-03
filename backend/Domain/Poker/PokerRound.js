@@ -9,6 +9,7 @@ class PokerRound {
     this.dealerIndex = 0;
     this.onActionIndex = this.dealerIndex + 1;
     this.pot = 0;
+    this.betsPot = 0;
     this.currentRaise = 0;
     this.whichRound = 0;
     this.cardMap = null;
@@ -34,7 +35,7 @@ class PokerRound {
 
   playerBet(player, amount) {
     player.bet(amount);
-    this.pot += amount;
+    this.betsPot += amount;
     this.currentRaise = Math.max(this.currentRaise, player.currentBet);
   }
 
@@ -49,7 +50,7 @@ class PokerRound {
     }
     if (this.pokerActivePlayers.length === 1 && this.allInPlayers.length === 0) {
       const lastPlayer = this.pokerActivePlayers[this.onActionIndex];
-      this.updatedStacks.set(lastPlayer.playerName, lastPlayer.stack + this.pot);
+      this.updatedStacks.set(lastPlayer.playerName, lastPlayer.stack + this.pot + this.betsPot);
       return {
         type: 'play-over',
         updatedStacks: this.updatedStacks,
@@ -86,7 +87,11 @@ class PokerRound {
     playerCalling.currentAction = 'call';
     this.onActionIndex = (this.onActionIndex + 1) % this.pokerActivePlayers.length;
     const onActionPlayer = this.pokerActivePlayers[this.onActionIndex];
-    if (onActionPlayer.currentAction === 'raise' || onActionPlayer.currentAction === 'all-in') {
+    if (
+      onActionPlayer.playerName === playerCalling.playerName ||
+      onActionPlayer.currentAction === 'raise' ||
+      onActionPlayer.currentAction === 'all-in'
+    ) {
       const status = this.roundCleanup();
       return status;
     }
@@ -113,7 +118,7 @@ class PokerRound {
   }
 
   checkAllIn() {
-    if (this.allInPlayers.length > 0 && this.pokerActivePlayers.length < 2) {
+    if (this.allInPlayers.length > 0 && this.pokerActivePlayers.length < 2 && this.whichRound !== 3) {
       return true;
     }
     return false;
@@ -131,14 +136,21 @@ class PokerRound {
         updatedStacks: this.updatedStacks,
       };
     }
+    this.pot += this.betsPot;
+    this.betsPot = 0;
     this.currentRaise = 0;
     this.whichRound += 1;
     this.onActionIndex = this.dealerIndex + 1;
+    this.allInPlayers.forEach((element) => {
+      element.currentBet = 0;
+    });
     this.pokerActivePlayers.forEach((element) => {
       element.currentAction = 'waiting';
       element.currentBet = 0;
     });
-    this.pokerActivePlayers[this.onActionIndex].currentAction = 'onAction';
+    if (this.pokerActivePlayers.length !== 1) {
+      this.pokerActivePlayers[this.onActionIndex].currentAction = 'onAction';
+    }
     return {
       type: 'round-over',
     };
