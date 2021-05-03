@@ -10,7 +10,7 @@ const Opponent = ({ props, isTurn }) => {
   const cards = [];
 
   for (let i = 0; i < handSize; i += 1) {
-    cards.push(<img key={i} className={`${styles.cardImage} ${styles.opponentCard}`} src="PokerImages/Images/blue_back.png" alt={`Card ${i + 1}`} />);
+    cards.push(<img key={i} className={`${styles.cardImage} ${styles.opponentCard}`} src="CardImages/blue_back.webp" alt={`Card ${i + 1}`} />);
   }
   return (
     <>

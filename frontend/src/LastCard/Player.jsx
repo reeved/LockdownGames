@@ -56,7 +56,7 @@ const Player = ({ cards, currentCard, setSelected, selectedCards }) => {
               <img
                 key={index}
                 className={`${styles.ownCardImage} ${isDisabled && styles.disabledCard} ${isSelected && styles.selectedCard}`}
-                src={`PokerImages/Images/${card}.png`}
+                src={`CardImages/${card}.webp`}
                 alt={`Card ${index + 1}`}
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                 role="button"

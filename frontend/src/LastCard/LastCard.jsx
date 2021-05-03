@@ -48,7 +48,7 @@ function LastCard({ loggedIn }) {
       <img
         style={{ transform: `rotate(${i}deg)` }}
         className={`${styles.cardImage} ${styles.drawPile}`}
-        src="PokerImages/Images/blue_back.png"
+        src="CardImages/blue_back.webp"
         alt="Draw Pile"
       />
     );
@@ -68,7 +68,7 @@ function LastCard({ loggedIn }) {
       <Row className={styles.midRow}>
         <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
         <Col className={styles.lastPlayed}>
-          <img className={styles.cardImage} src={`PokerImages/Images/${lastPlayed}.png`} alt="Last Played Card" />
+          <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />
         </Col>
         <Col className={styles.board}>{drawPile}</Col>
       </Row>
