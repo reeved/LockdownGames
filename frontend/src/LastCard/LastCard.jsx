@@ -46,6 +46,7 @@ function LastCard({ loggedIn }) {
   for (let i = 0; i < 10; i += 1) {
     drawPile.push(
       <img
+        key={i}
         style={{ transform: `rotate(${i}deg)` }}
         className={`${styles.cardImage} ${styles.drawPile}`}
         src="CardImages/blue_back.webp"

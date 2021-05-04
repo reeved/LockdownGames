@@ -18,7 +18,7 @@ const WebsiteRoutes = () => {
 
   const { state: LastCardState, dispatch: LastCardDispatch } = uselastCardState();
 
-  const loggedIn = lobbyState.lobbyID;
+  const loggedIn = lobbyState.lobbyID.length === 6;
 
   return (
     <Switch>

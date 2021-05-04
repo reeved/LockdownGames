@@ -10,8 +10,8 @@ function createLobby(io, socket, lobbyManager) {
     socket.join(lobby.roomID);
     socket.player = host;
 
-    socket.emit('join-lobby', lobby.roomID, nickname);
-    io.in(lobby.roomID).emit('update-players', lobby.getPlayerNicknames());
+    socket.emit('join-lobby', lobby.roomID, nickname, lobby.chosenGame);
+    io.in(lobby.roomID).emit('update-players', lobby.getPlayerNicknames(), true);
   });
 }
 
@@ -20,8 +20,22 @@ function joinLobby(io, socket, lobbyManager) {
     const lobby = lobbyManager.lobbies.get(lobbyCode);
 
     if (!lobby) {
-      console.log('Invalid Lobby Code: ', lobbyCode);
-      socket.emit('join-lobby', null, 'Anon');
+      socket.emit('join-lobby', 1, 'Anon');
+      return;
+    }
+
+    if (lobby.players.length === lobby.maxSize) {
+      socket.emit('join-lobby', 2, 'Anon');
+      return;
+    }
+
+    if (lobby.hasStarted) {
+      socket.emit('join-lobby', 3, 'Anon');
+      return;
+    }
+
+    if (lobby.checkPlayerNicknames(nickname)) {
+      socket.emit('join-lobby', 4, 'Anon');
       return;
     }
 
@@ -30,7 +44,7 @@ function joinLobby(io, socket, lobbyManager) {
     socket.join(lobby.roomID);
     socket.player = player;
 
-    socket.emit('join-lobby', lobby.roomID, nickname);
+    socket.emit('join-lobby', lobby.roomID, nickname, lobby.chosenGame);
     io.in(lobby.roomID).emit('update-players', lobby.getPlayerNicknames());
   });
 }
@@ -40,12 +54,16 @@ function leaveLobby(io, socket, lobbyManager) {
     if (socket.player) {
       const roomID = socket.player.lobbyID;
       const room = io.of('/').adapter.rooms.get(roomID);
-      // console.log('Room: ', room);
 
       if (room.size === 1) {
         console.log('Cleaning up');
         // user is the last one in the room. lobby should now be cleaned.
         lobbyManager.deleteLobby(roomID);
+      } else {
+        // remove player from lobby playerlist
+        const lobby = lobbyManager.lobbies.get(roomID);
+        lobby.removePlayer(socket.player);
+        io.in(lobby.roomID).emit('update-players', lobby.getPlayerNicknames());
       }
     }
   });
@@ -54,17 +72,22 @@ function leaveLobby(io, socket, lobbyManager) {
 function chatMessage(io, socket) {
   socket.on('chat-message', ({ msg, playerNickname }) => {
     const roomID = socket.player.lobbyID;
-    // console.log(msg);
-    // const message = `${playerNickname}: ${msg}`;
     const message = { sender: `${playerNickname}:`, msg };
     io.in(roomID).emit('chat-message', message);
   });
 }
 
-function gameStarted(io, socket) {
-  socket.on('start-game', (chosenGame) => {
+function selectGame(io, socket, lobbyManager) {
+  socket.on('selected-game', (hasStarted, chosenGame) => {
     const { lobbyID } = socket.player;
-    io.in(lobbyID).emit('game-started', chosenGame);
+    const lobby = lobbyManager.lobbies.get(lobbyID);
+    lobby.updateLobbySize(chosenGame);
+
+    if (hasStarted) {
+      lobby.setStarted();
+    }
+
+    io.in(lobbyID).emit('selected-game', hasStarted, chosenGame);
   });
 }
 
@@ -73,5 +96,5 @@ module.exports = function exp(io, socket, lobbyManager) {
   joinLobby(io, socket, lobbyManager);
   chatMessage(io, socket, lobbyManager);
   leaveLobby(io, socket, lobbyManager);
-  gameStarted(io, socket);
+  selectGame(io, socket, lobbyManager);
 };

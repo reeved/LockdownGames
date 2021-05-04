@@ -33,12 +33,13 @@ const HomePage = () => {
   const [nicknameError, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState(' ');
 
-  const notValidID = lobbyState.lobbyID === null;
-  const errorMsgID = notValidID && 'This lobby does not exist. Try another code, or create a Lobby.';
+  const notValid = lobbyState.lobbyID.length !== 6 && lobbyState.lobbyID !== false;
+
+  let errorMsgText;
 
   const classes = useStyles({ lobbyCode });
 
-  const userHasInput = (nickname || lobbyCode);
+  const userHasInput = nickname || lobbyCode;
 
   const handleBtnClick = () => {
     if (lobbyCode) {
@@ -59,8 +60,17 @@ const HomePage = () => {
     }
   };
 
+  if (lobbyState.lobbyID === 1) {
+    errorMsgText = 'This lobby does not exist. Try another code, or create a Lobby.';
+  } else if (lobbyState.lobbyID === 2) {
+    errorMsgText = 'This lobby is full.';
+  } else if (lobbyState.lobbyID === 3) {
+    errorMsgText = 'This lobby is currently in game.';
+  } else if (lobbyState.lobbyID === 4) {
+    errorMsgText = 'There is already a player with that nickname in the lobby.';
+  }
 
-  if (lobbyState.lobbyID) {
+  if (lobbyState.lobbyID.length === 6) {
     return <Redirect to="/lobby" />;
   }
   return (
@@ -88,8 +98,8 @@ const HomePage = () => {
         </Grid>
         <Grid container item xs={12} md={8} lg={8} justify="flex-start">
           <TextField
-            error={notValidID}
-            helperText={errorMsgID}
+            error={notValid}
+            helperText={errorMsgText}
             className={classes.textField}
             InputProps={{
               className: classes.input,
@@ -101,12 +111,13 @@ const HomePage = () => {
           />
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
-        {userHasInput && <Button type="button" className={`${classes.button}`} variant="contained" disabled={nicknameError || !nickname} onClick={handleBtnClick}>
-            {lobbyCode ? `Join Lobby` : `Create Lobby`}
-          </Button>}
+          {userHasInput && (
+            <Button type="button" className={`${classes.button}`} variant="contained" disabled={nicknameError || !nickname} onClick={handleBtnClick}>
+              {lobbyCode ? `Join Lobby` : `Create Lobby`}
+            </Button>
+          )}
         </Grid>
       </Grid>
-      <p>{lobbyState.validID}</p>
     </div>
   );
 };

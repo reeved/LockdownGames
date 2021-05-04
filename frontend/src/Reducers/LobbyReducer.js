@@ -2,12 +2,13 @@ import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
 const initialState = {
-  gameStarted: null, // if game started => game name e.g. poker
   nickname: 'Anon',
   lobbyID: false,
   isHost: false,
   lobbyReady: false,
   players: [''],
+  gameStarted: null,
+  chosenGame: null,
   chatMessages: [],
 };
 
@@ -20,19 +21,21 @@ const reducer = (state, action) => {
     }
 
     case 'join-lobby': {
-      console.log(action.status, action.nickname);
+      console.log(action.status, action.nickname, action.chosenGame);
       return {
         ...state,
         lobbyID: action.status,
         nickname: action.nickname,
+        chosenGame: action.chosenGame,
       };
     }
 
     case 'update-players': {
-      console.log(action.playerList);
+      console.log('REDUCER IS HOST:', action.isHost);
       return {
         ...state,
         players: action.playerList,
+        isHost: action.isHost ? action.isHost : state.isHost,
       };
     }
 
@@ -43,10 +46,11 @@ const reducer = (state, action) => {
       };
     }
 
-    case 'game-started': {
+    case 'set-game': {
       return {
         ...state,
-        gameStarted: action.gameName,
+        gameStarted: action.hasStarted,
+        chosenGame: action.gameName,
       };
     }
 
@@ -69,18 +73,21 @@ export default function useLobbyState() {
   }, []);
 
   useEffect(() => {
-    function joinLobby(status, nickname) {
+    function joinLobby(status, nickname, chosenGame) {
       dispatch({
         type: 'join-lobby',
         status,
         nickname,
+        chosenGame,
       });
     }
 
-    function updatePlayers(playerList) {
+    function updatePlayers(playerList, isHost) {
+      console.log('IS HOST AT FUNCTION: ', isHost);
       dispatch({
         type: 'update-players',
         playerList,
+        isHost,
       });
     }
 
@@ -91,9 +98,10 @@ export default function useLobbyState() {
       });
     }
 
-    function setGameStarted(gameName) {
+    function setGame(hasStarted, gameName) {
       dispatch({
-        type: 'game-started',
+        type: 'set-game',
+        hasStarted,
         gameName,
       });
     }
@@ -101,13 +109,13 @@ export default function useLobbyState() {
     socket.on('join-lobby', joinLobby);
     socket.on('chat-message', newChatMessage);
     socket.on('update-players', updatePlayers);
-    socket.on('game-started', setGameStarted);
+    socket.on('selected-game', setGame);
 
     return () => {
       socket.removeListener('join-lobby', joinLobby);
       socket.removeListener('chat-message', newChatMessage);
       socket.removeListener('update-players', updatePlayers);
-      socket.removeListener('game-started', setGameStarted);
+      socket.removeListener('selected-game', setGame);
     };
   }, [state]);
 

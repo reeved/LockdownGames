@@ -1,8 +1,13 @@
+const { MAX_SIZES } = require('./config');
+
 class Lobby {
   constructor() {
     this.roomID = this.setRoomID();
     this.players = [];
     this.host = null;
+    this.hasStarted = false;
+    this.chosenGame = 'codenames';
+    this.maxSize = MAX_SIZES.codenames;
     this.chatMessages = [];
   }
 
@@ -35,6 +40,13 @@ class Lobby {
     }
   }
 
+  // Checks if a players nickname already exists.
+  checkPlayerNicknames(nickname) {
+    const checkNickname = (p) => p.nickname === nickname;
+
+    return this.players.some(checkNickname);
+  }
+
   getPlayerNicknames() {
     const playerList = [];
     this.players.forEach((p) => {
@@ -42,6 +54,15 @@ class Lobby {
     });
 
     return playerList;
+  }
+
+  updateLobbySize(game) {
+    this.chosenGame = game;
+    this.maxSize = MAX_SIZES[game];
+  }
+
+  setStarted() {
+    this.hasStarted = true;
   }
 }
 
