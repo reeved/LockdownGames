@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { LobbyContext, CodenamesContext, PokerContext, LastCardContext } from './Context';
 import useCodenamesState from './Reducers/CodeNamesReducer';
 import usePokerState from './Reducers/PokerReducer';
-import uselastCardState from './Reducers/lastCardReducer';
+import uselastCardState from './Reducers/LastCardReducer';
 
 import HomePage from './HomePage/HomePage';
 import Lobby from './Lobby/Lobby';

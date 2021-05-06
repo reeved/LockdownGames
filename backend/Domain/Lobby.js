@@ -9,6 +9,7 @@ class Lobby {
     this.chosenGame = 'codenames';
     this.maxSize = MAX_SIZES.codenames;
     this.chatMessages = [];
+    this.game = null;
   }
 
   // eslint-disable-next-line class-methods-use-this

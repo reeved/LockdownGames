@@ -5,6 +5,7 @@ const GameState = require('./GameState');
 class Game {
   constructor(players) {
     this.deck = new Deck(); // deck
+    this.deck.setDeck();
     this.gameState = new GameState(players);
     this.pokerRound = null;
   }

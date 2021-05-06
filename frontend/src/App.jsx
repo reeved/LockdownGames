@@ -29,14 +29,14 @@ function App() {
         <div className="App">
           <AppBar position="static">
             <Toolbar>
-              <h5>
-                {user && `Hi, ${user['https://lockdown-games.nz/username'] || user.nickname}!`}
-              </h5>
-              <Grid item xs/>
-              {user && <Button className="rounded-circle img-fluid profile-picture mr-4 "> 
-                <img src={user.picture} alt="Profile" className="rounded-circle img-fluid profile-picture " />
-              </Button>}
-              <Button type="button" variant="contained"  onClick={() => handleUser()}>
+              <h5>{user && `Hi, ${user['https://lockdown-games.nz/username'] || user.nickname}!`}</h5>
+              <Grid item xs />
+              {user && (
+                <Button className="rounded-circle img-fluid profile-picture mr-4 ">
+                  <img src={user.picture} alt="Profile" className="rounded-circle img-fluid profile-picture " />
+                </Button>
+              )}
+              <Button type="button" variant="contained" onClick={() => handleUser()}>
                 {user ? 'Log out' : 'Log in \\ Sign up'}
               </Button>
             </Toolbar>

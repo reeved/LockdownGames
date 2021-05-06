@@ -92,6 +92,11 @@
   margin-right: -2em;
 }
 
+.aceCard {
+  margin-left: 0 !important;
+  margin-right: 1em;
+}
+
 .disabledCard {
   pointer-events: none;
 }

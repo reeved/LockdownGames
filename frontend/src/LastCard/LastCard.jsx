@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/esm/Col';
 import Row from 'react-bootstrap/esm/Row';
 import { Button } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import { LastCardContext } from '../Context';
+import { LastCardContext, LobbyContext } from '../Context';
 import styles from './LastCard.module.css';
 
 import socket from '../Socket';
@@ -14,20 +14,23 @@ import Player from './Player';
 
 function LastCard({ loggedIn }) {
   const { state, dispatch } = useContext(LastCardContext);
+  const { state: lobbyState } = useContext(LobbyContext);
 
-  const { playersState, ownCards, lastPlayed, currentTurn, totalPickUp, selectedCards } = state;
+  const { playersState, lastPlayed, currentTurn, totalPickUp, selectedCards } = state;
+  const { nickname } = lobbyState;
 
   if (!loggedIn) {
     return <Redirect to="/" />;
   }
 
-  const handleCardClick = (card) => {
+  const handleCardClick = (card, acePlayed) => {
     let cards = selectedCards;
     const exists = selectedCards.includes(card);
     if (exists) {
       cards = cards.filter((c) => c !== card);
+      cards = cards.filter((c) => c.value !== card.value);
     } else {
-      cards = [...cards, card];
+      cards = card.slice(0, -1) === 'A' && acePlayed ? [card] : [...cards, card];
     }
 
     dispatch({
@@ -36,11 +39,15 @@ function LastCard({ loggedIn }) {
     });
   };
 
-  function handleAction(type, amount) {
-    console.log(type, amount);
-    socket.emit('poker-action', type, amount);
+  function setUpOpponents() {
+    if (playersState.length) {
+      while (playersState[0].name !== nickname) {
+        const endPlayer = playersState.pop();
+        playersState.unshift(endPlayer);
+      }
+    }
+    console.log(playersState);
   }
-
   const drawPile = [];
 
   for (let i = 0; i < 10; i += 1) {
@@ -55,16 +62,18 @@ function LastCard({ loggedIn }) {
     );
   }
 
-  const cards = ['AH', 'AH', 'AH', 'blue_back', 'blue_back'];
-
   return (
     <Container className={styles.lastcardContainer}>
       <Row className={styles.topRow}>
-        {playersState.map((p, index) => (
-          <Col key={index} className={`flexCol ${styles.opponent}`}>
-            <Opponent props={p} isTurn={currentTurn === p.name} />
-          </Col>
-        ))}
+        {setUpOpponents()}
+        {playersState.map(
+          (p, index) =>
+            nickname !== p.name && (
+              <Col key={index} className={`flexCol ${styles.opponent}`}>
+                <Opponent props={p} isTurn={currentTurn === p.name} />
+              </Col>
+            )
+        )}
       </Row>
       <Row className={styles.midRow}>
         <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
@@ -74,8 +83,8 @@ function LastCard({ loggedIn }) {
         <Col className={styles.board}>{drawPile}</Col>
       </Row>
       <Row className={styles.bottomRow}>
-        <Col className="flexCol">
-          <Player cards={ownCards} currentCard={lastPlayed} setSelected={handleCardClick} selectedCards={selectedCards} />
+        <Col className={`flexCol ${currentTurn !== nickname && 'disabled'}`}>
+          <Player setSelected={handleCardClick} selectedCards={selectedCards} />
         </Col>
       </Row>
     </Container>

@@ -2,6 +2,10 @@ const Card = require('./Card.js');
 
 class Deck {
   constructor() {
+    this.state = [];
+  }
+
+  setDeck() {
     this.state = Deck.createDeck();
     this.shuffleDeck();
   }
@@ -28,7 +32,6 @@ class Deck {
     for (let i = 0; i < 7; i += 1) {
       hand.push(this.getACard());
     }
-
     return hand;
   }
 
@@ -56,6 +59,11 @@ class Deck {
       this.state[i] = this.state[j];
       this.state[j] = temp;
     }
+  }
+
+  addCard(card) {
+    // parameter "card" is of type string so must convert to card object
+    this.state.push(new Card(card.slice(0, -1), card.slice(-1)));
   }
 }
 module.exports = Deck;

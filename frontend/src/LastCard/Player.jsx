@@ -1,12 +1,28 @@
 /* eslint-disable no-unused-vars */
-import { React } from 'react';
+import { React, useContext, useState } from 'react';
 import { Button, makeStyles } from '@material-ui/core';
 import styles from './Player.module.css';
+import socket from '../Socket';
+import { LastCardContext, LobbyContext } from '../Context';
 
 // eslint-disable-next-line arrow-body-style
-const Player = ({ cards, currentCard, setSelected, selectedCards }) => {
-  const currentValue = currentCard.charAt(0);
-  const currentSuit = currentCard.charAt(1);
+
+const Player = ({ setSelected }) => {
+  const { state, dispatch } = useContext(LastCardContext);
+  const { state: lobbyState } = useContext(LobbyContext);
+  const { nickname } = lobbyState;
+
+  const { ownCards, lastPlayed, selectedCards, currentTurn, totalPickUp } = state;
+
+  const [acePlayed, setAce] = useState(false);
+  const [originalAce, setOriginalAce] = useState(null);
+  const [tempCards, setTempCards] = useState(['AC', 'AD', 'AH', 'AS']);
+
+  const currentValue = lastPlayed.slice(0, -1);
+  const currentSuit = lastPlayed.slice(-1);
+
+  const mustPlay5 = currentValue === '5' && totalPickUp !== 0;
+  const mustPlay2 = currentValue === '2' && totalPickUp !== 0;
 
   const useStyles = makeStyles({
     button: {
@@ -35,19 +51,48 @@ const Player = ({ cards, currentCard, setSelected, selectedCards }) => {
 
   const classes = useStyles();
 
+  const confirmHandler = () => {
+    if (selectedCards[0].slice(0, -1) === 'A') {
+      setOriginalAce(selectedCards[0]);
+      setTempCards(ownCards);
+      if (acePlayed) {
+        dispatch({ type: 'ace-played', hand: tempCards });
+        socket.emit('lastcard-card-played', selectedCards, ownCards.length - selectedCards === 0, totalPickUp, originalAce);
+      } else {
+        console.log('Setting Cards');
+        dispatch({ type: 'ace-played', hand: ['AC', 'AD', 'AH', 'AS'] });
+      }
+      setAce(!acePlayed);
+    } else {
+      socket.emit('lastcard-card-played', selectedCards, ownCards.length - selectedCards === 0, totalPickUp);
+    }
+  };
+
+  const cancelHandler = () => {
+    console.log('tempCards:', tempCards);
+    console.log('Ace Played:', acePlayed);
+    if (acePlayed) {
+      dispatch({ type: 'ace-played', hand: tempCards });
+      setTempCards(['AC', 'AD', 'AH', 'AS']);
+      setAce(false);
+    } else {
+      socket.emit('lastcard-update-hand', totalPickUp || 1);
+    }
+  };
+
   return (
     <>
       <div className={styles.playerContainer}>
         <div className={styles.playerCards}>
-          {cards.map((card, index) => {
-            const cardValue = card.charAt(0);
-            const cardSuit = card.charAt(1);
+          {ownCards.map((card, index) => {
+            const cardValue = card.slice(0, -1);
+            const cardSuit = card.slice(-1);
             const currentSelectedCard = selectedCards[0];
-            let isDisabled;
+            let isActive;
             if (currentSelectedCard) {
-              isDisabled = (card !== currentSelectedCard && cardValue !== currentValue) || cardValue !== currentSelectedCard.charAt(0);
+              isActive = cardValue === currentSelectedCard.slice(0, -1);
             } else {
-              isDisabled = cardValue !== currentValue && cardSuit !== currentSuit;
+              isActive = cardValue === 'A' || cardValue === currentValue || cardSuit === currentSuit;
             }
 
             const isSelected = selectedCards.includes(card);
@@ -55,25 +100,75 @@ const Player = ({ cards, currentCard, setSelected, selectedCards }) => {
             return (
               <img
                 key={index}
-                className={`${styles.ownCardImage} ${isDisabled && styles.disabledCard} ${isSelected && styles.selectedCard}`}
+                className={`${styles.ownCardImage} ${!isActive ? styles.disabledCard : ''} ${isSelected ? styles.selectedCard : ''} ${
+                  acePlayed ? styles.aceCard : ''
+                }`}
                 src={`CardImages/${card}.webp`}
-                alt={`Card ${index + 1}`}
+                label="Card"
+                alt=""
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                 role="button"
                 tabIndex={0}
-                onKeyDown={() => setSelected(card)}
-                onClick={() => setSelected(card)}
+                onKeyDown={() => setSelected(card, acePlayed)}
+                onClick={() => setSelected(card, acePlayed)}
               />
             );
           })}
         </div>
-        <div className={styles.buttonContainer}>
-          <Button className={`${classes.button} ${classes.confirm}`} variant="contained" disableRipple>
-            Confirm
-          </Button>
-          <Button className={`${classes.button} ${classes.draw}`} variant="contained" disableRipple>
-            Draw/Skip
-          </Button>
+        <div className={`${styles.buttonContainer}`}>
+          {acePlayed ? (
+            <>
+              <Button
+                className={`${classes.button} ${classes.confirm}`}
+                variant="contained"
+                disableRipple
+                disabled={
+                  currentTurn !== nickname ||
+                  selectedCards.length === 0 ||
+                  (mustPlay5 && selectedCards[0].slice(0, -1) !== '5') ||
+                  (mustPlay2 && selectedCards[0].slice(0, -1) !== '2')
+                }
+                onClick={() => confirmHandler()}
+              >
+                CONFIRM COLOUR
+              </Button>
+              <Button
+                className={`${classes.button} ${classes.draw}`}
+                disabled={currentTurn !== nickname}
+                variant="contained"
+                disableRipple
+                onClick={() => cancelHandler()}
+              >
+                CANCEL
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                className={`${classes.button} ${classes.confirm}`}
+                variant="contained"
+                disableRipple
+                disabled={
+                  currentTurn !== nickname ||
+                  selectedCards.length === 0 ||
+                  (mustPlay5 && selectedCards[0].slice(0, -1) !== '5') ||
+                  (mustPlay2 && selectedCards[0].slice(0, -1) !== '2')
+                }
+                onClick={() => confirmHandler()}
+              >
+                Confirm
+              </Button>
+              <Button
+                className={`${classes.button} ${classes.draw}`}
+                disabled={currentTurn !== nickname}
+                variant="contained"
+                disableRipple
+                onClick={() => cancelHandler()}
+              >
+                Draw/Skip
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </>
