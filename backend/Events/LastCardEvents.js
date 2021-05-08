@@ -1,7 +1,5 @@
 const Game = require('../Domain/LastCard/Game');
 
-// const Deck = require('../Domain/Poker/Deck');
-
 function newLastCardGame(io, socket, lobbyManager) {
   socket.on('lastcard-new-game', () => {
     // eslint-disable-next-line no-console
@@ -37,15 +35,14 @@ function drawCard(io, socket, lobbyManager) {
     const len = lobby.players.length;
     let nextPlayer = lobby.game.players[(((indexOfCurrentPlayer + direction) % len) + len) % len];
 
-    let count = 1;
+    let count = direction;
     while (!nextPlayer.isPlaying && nextPlayer.name !== socket.player.nickname) {
       // check if the next player is finsihed
       nextPlayer = lobby.game.players[(((indexOfCurrentPlayer + direction + count) % len) + len) % len];
-      count += 1;
+      direction >= 0 ? (count += 1) : (count -= 1);
 
-      console.log(lobby.players.length);
-      if (count > lobby.players.length) {
-        newLastCardGame(io, socket, lobbyManager);
+      if (Math.abs(count) === lobby.players.length) {
+        io.in(lobbyID).emit('game-over', true);
       }
     }
     let amountPickedup = 0;
@@ -111,23 +108,14 @@ function playCard(io, socket, lobbyManager) {
     // some janky math because javascript doesn't know how to mod properly
     const x = lobby.players.length;
     let nextPlayer = lobby.game.players[(((lobbyIndex + direction) % x) + x) % x];
-    console.log('First next player: ', nextPlayer);
-    let count = 0;
-    console.log('Names', nextPlayer.name, socket.player.nickname, nextPlayer.name !== socket.player.nickname);
+    let count = direction;
 
     while (!nextPlayer.isPlaying && nextPlayer.name !== socket.player.nickname) {
       // check if the next player is finsihed
-      console.log(socket.player.nickname, nextPlayer.name);
-      nextPlayer = lobby.game.players[(((lobbyIndex + direction + count) % x) + x) % x];
-      count += 1;
 
-      console.log(lobby.players.length, count);
-      if (count > lobby.players.length) {
-        console.log('NEW GAME STARTED AHHHHHHHHHHHHHHHHHHH');
-        newLastCardGame(io, socket, lobbyManager);
-      }
+      nextPlayer = lobby.game.players[(((lobbyIndex + direction + count) % x) + x) % x];
+      direction >= 0 ? (count += 1) : (count -= 1);
     }
-    console.log('Checked next player: ', nextPlayer);
     // console.log(lobby.game.players);
     if (card.slice(0, -1) !== '5' && card.slice(0, -1) !== '2' && lobby.game.players[gameIndex].handSize === 0) {
       playerFin = false;
@@ -143,6 +131,13 @@ function playCard(io, socket, lobbyManager) {
       totalPickup,
       originalAce
     );
+
+    const numOfPlayersPlaying = lobby.game.players.filter((p) => p.isPlaying === true);
+
+    if (numOfPlayersPlaying.length === 1) {
+      console.log(lobby.game.players);
+      io.in(lobbyID).emit('lastcard-game-over', true, lobby.game.players);
+    }
   });
 }
 

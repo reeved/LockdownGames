@@ -8,7 +8,7 @@ import ModalGraph from '../Poker/ModalGraph';
 // eslint-disable-next-line arrow-body-style
 const GameInfo = () => {
   const { state: lobbyState } = useContext(LobbyContext);
-  const { state: pokerState } = useContext(PokerContext);
+  // const { state: pokerState } = useContext(PokerContext);
 
   const { nickname, players } = lobbyState;
 
@@ -35,7 +35,7 @@ const GameInfo = () => {
         <p>
           <strong>Losses:</strong> 4
         </p>
-        {pokerState.gameState ? <ModalGraph stackTrack={pokerState.gameState.serializedStackTrack} /> : null}
+        {/* {pokerState.gameState ? <ModalGraph stackTrack={pokerState.gameState.serializedStackTrack} /> : null} */}
       </div>
     </div>
   );

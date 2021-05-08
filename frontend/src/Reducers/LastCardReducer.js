@@ -9,6 +9,7 @@ const initialState = {
   currentTurn: null,
   totalPickUp: 0,
   selectedCards: [],
+  gameOver: false,
 };
 
 const reducer = (state, action) => {
@@ -26,6 +27,7 @@ const reducer = (state, action) => {
         playersState: action.allPlayers,
         lastPlayed: action.startingCard,
         currentTurn: action.allPlayers[0].name,
+        gameOver: false,
       };
     }
 
@@ -53,9 +55,13 @@ const reducer = (state, action) => {
       };
     }
 
-    case 'player-finished': {
+    case 'game-over': {
+      console.log('Game OVER');
       return {
         ...state,
+        playersState: action.playersState,
+        gameOver: action.isGameOver,
+        ownCards: [],
       };
     }
 
@@ -135,10 +141,11 @@ export default function useCodenamesState() {
       });
     }
 
-    function setPlayerFinished(gameState) {
+    function gameOver(isGameOver, playersState) {
       dispatch({
-        type: 'player-finished',
-        gameState,
+        type: 'game-over',
+        isGameOver,
+        playersState,
       });
     }
 
@@ -153,15 +160,17 @@ export default function useCodenamesState() {
     socket.on('lastcard-new-game', newLastCardGame);
     socket.on('lastcard-update-hand', drawCard);
     socket.on('lastcard-card-played', playCard);
-    socket.on('lastcard-player-finished', setPlayerFinished);
+    // socket.on('lastcard-player-finished', setPlayerFinished);
     socket.on('lastcard-change-turn', changeTurn);
+    socket.on('lastcard-game-over', gameOver);
 
     return () => {
       socket.removeListener('lastcard-new-game', newLastCardGame);
       socket.removeListener('lastcard-update-hand', drawCard);
       socket.removeListener('lastcard-card-played', playCard);
-      socket.removeListener('lastcard-player-finished', setPlayerFinished);
+      // socket.removeListener('lastcard-player-finished', setPlayerFinished);
       socket.removeListener('lastcard-change-turn', changeTurn);
+      socket.removeListener('lasrcard-game-over', gameOver);
     };
   }, [state]);
 

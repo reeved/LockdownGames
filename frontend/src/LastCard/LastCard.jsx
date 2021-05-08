@@ -16,7 +16,7 @@ function LastCard({ loggedIn }) {
   const { state, dispatch } = useContext(LastCardContext);
   const { state: lobbyState } = useContext(LobbyContext);
 
-  const { playersState, lastPlayed, currentTurn, totalPickUp, selectedCards } = state;
+  const { playersState, lastPlayed, currentTurn, totalPickUp, selectedCards, gameOver } = state;
   const { nickname } = lobbyState;
 
   if (!loggedIn) {
@@ -78,7 +78,13 @@ function LastCard({ loggedIn }) {
       <Row className={styles.midRow}>
         <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
         <Col className={styles.lastPlayed}>
-          <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />
+          {gameOver ? (
+            <Button onClick={() => socket.emit('lastcard-new-game')}>New Game! </Button>
+          ) : (
+            <>
+              <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />
+            </>
+          )}
         </Col>
         <Col className={styles.board}>{drawPile}</Col>
       </Row>

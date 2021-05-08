@@ -12,7 +12,7 @@ const Player = ({ setSelected }) => {
   const { state: lobbyState } = useContext(LobbyContext);
   const { nickname } = lobbyState;
 
-  const { ownCards, lastPlayed, selectedCards, currentTurn, totalPickUp } = state;
+  const { ownCards, lastPlayed, selectedCards, currentTurn, totalPickUp, gameOver } = state;
 
   const [acePlayed, setAce] = useState(false);
   const [originalAce, setOriginalAce] = useState(null);
@@ -160,7 +160,7 @@ const Player = ({ setSelected }) => {
               </Button>
               <Button
                 className={`${classes.button} ${classes.draw}`}
-                disabled={currentTurn !== nickname}
+                disabled={currentTurn !== nickname || gameOver}
                 variant="contained"
                 disableRipple
                 onClick={() => cancelHandler()}
