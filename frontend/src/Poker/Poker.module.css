@@ -17,7 +17,7 @@
 .midRow {
   display: flex;
   flex-grow: 1;
-  border: 5px solid yellow;
+  /* border: 5px solid yellow; */
   align-items: center;
 }
 
@@ -29,6 +29,13 @@
   border-radius: 1em;
   margin: 0;
   padding-bottom: 1em;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  justify-content: center;
 }
 
 .opponent {

@@ -16,16 +16,21 @@ const Opponent = ({ playerName, stack, currentBet, isOnAction, isDealer, isIn })
         <div className={`${styles.mainInfo} ${isOnAction ? styles.isOnAction : null}`}>
           <span>{playerName}</span>
           <span>{stack}</span>
-          {isIn ? (
+          <div className={styles.opponentCards}>
+            {isIn
+              ? cards.map((card, index) => <img key={index} className={styles.cardImage} src="CardImages/blue_back.webp" alt={`Card ${index + 1}`} />)
+              : null}
+          </div>
+          {/* {isIn ? (
             <div className={styles.opponentCards}>
               {cards.map((card, index) => (
-                <img key={index} className={styles.cardImage} src="PokerImages/Images/blue_back.png" alt={`Card ${index + 1}`} />
+                <img key={index} className={styles.cardImage} src="CardImages/blue_back.webp" alt={`Card ${index + 1}`} />
               ))}
             </div>
-          ) : null}
+          ) : null} */}
         </div>
         <div className={styles.betContainer}>
-          {isDealer ? <img className={styles.dealerButton} src="PokerImages/Images/dealer.png" alt="dealer" /> : null}
+          {isDealer ? <img className={styles.dealerButton} src="CardImages/dealer.webp" alt="dealer" /> : null}
           {currentBet && currentBet !== 0 ? (
             <div className={styles.bet}>
               <p>{currentBet}</p>

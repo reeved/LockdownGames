@@ -11,7 +11,7 @@ function ActionButtons({ handleAction, isOnAction, pokerRound, currentBet, handl
       width: '0',
       padding: '5vmin',
       fontSize: 'calc(5px + 1vmin)',
-      marginRight: '1em',
+      // marginRight: '1em',
     },
     fold: {
       backgroundColor: '#d00000',

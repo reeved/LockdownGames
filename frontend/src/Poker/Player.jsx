@@ -24,6 +24,7 @@ const Player = ({ handleAction }) => {
   let player = null;
   let stack = 0;
   let currentBet = null;
+  let isIn = false;
   pokerState.gameState.playerState.forEach((element) => {
     if (element.playerName === nickname) player = element;
     if (element.playerName === nickname) stack = player.stack;
@@ -33,14 +34,19 @@ const Player = ({ handleAction }) => {
       if (element.playerName === nickname) player = element;
       if (element.playerName === nickname) stack = element.stack;
       if (element.playerName === nickname) currentBet = element.currentBet;
-      if (element.playerName === nickname && index === 0) isDealer = true;
+      // if (element.playerName === nickname && index === 0) isDealer = true;
+      if (element.playerName === nickname && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
+      if (element.playerName === nickname) isIn = true;
     });
     pokerState.pokerRound.foldedPlayers.forEach((element) => {
+      if (element.playerName === nickname && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
       if (element.playerName === nickname) stack = element.stack;
     });
     pokerState.pokerRound.allInPlayers.forEach((element) => {
+      if (element.playerName === nickname && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
       if (element.playerName === nickname) stack = element.stack;
       if (element.playerName === nickname) currentBet = element.currentBet;
+      if (element.playerName === nickname) isIn = true;
     });
   }
   const cards = pokerState.cardMap.get(nickname);
@@ -57,7 +63,7 @@ const Player = ({ handleAction }) => {
     <div className={styles.playerRow}>
       <div className={styles.playerContainer}>
         <div className={styles.betContainer}>
-          {isDealer ? <img className={styles.dealerButton} src="PokerImages/Images/dealer.png" alt="dealer" /> : null}
+          {isDealer ? <img className={styles.dealerButton} src="CardImages/dealer.webp" alt="dealer" /> : null}
           {currentBet && currentBet !== 0 ? (
             <div className={styles.bet}>
               <p>{currentBet}</p>
@@ -65,14 +71,18 @@ const Player = ({ handleAction }) => {
           ) : null}
         </div>
         <div className={`${styles.mainInfo} ${isOnAction ? styles.isOnAction : null}`}>
-          <span>{nickname}</span>
-          <span>{stack}</span>
+          <div className={styles.playerInfo}>
+            <span style={{ width: '100%', textAlign: 'left' }}>{nickname}</span>
+            <span>{stack}</span>
+            {/* <span className={styles.playerWin}>+200</span> */}
+          </div>
+
           <div className={styles.playerCards}>
-            {cards ? (
-              <img key={1} className={`${styles.cardImage} ${styles.ownCardImage}`} src={`PokerImages/Images/${cards.card1}.png`} alt="Card1" />
+            {cards && isIn ? (
+              <img key={1} className={`${styles.cardImage} ${styles.ownCardImage}`} src={`CardImages/${cards.card1}.webp`} alt="Card1" />
             ) : null}
-            {cards ? (
-              <img key={2} className={`${styles.cardImage} ${styles.ownCardImage}`} src={`PokerImages/Images/${cards.card2}.png`} alt="Card2" />
+            {cards && isIn ? (
+              <img key={2} className={`${styles.cardImage} ${styles.ownCardImage}`} src={`CardImages/${cards.card2}.webp`} alt="Card2" />
             ) : null}
           </div>
         </div>
@@ -80,7 +90,13 @@ const Player = ({ handleAction }) => {
 
       <div className={styles.buttonContainer}>
         {isRaise ? (
-          <InputSlider minRaise={minRaise} maxRaise={stack + currentBet} handleBackButton={handleBackButton} handleRaiseButton={handleRaiseButton} />
+          <InputSlider
+            minRaise={minRaise}
+            maxRaise={stack + currentBet}
+            handleBackButton={handleBackButton}
+            handleRaiseButton={handleRaiseButton}
+            pot={pokerState.pokerRound.pot}
+          />
         ) : (
           <ActionButtons
             handleAction={handleAction}

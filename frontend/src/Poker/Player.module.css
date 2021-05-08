@@ -14,8 +14,24 @@
 .buttonContainer {
   display: flex;
   flex-direction: row;
+  flex-grow: 1;
   align-items: center;
+  padding-left: 1em;
+  justify-content: space-evenly;
   /* flex-grow: 1; */
+}
+
+.raiseButtons {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.slider {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
 }
 
 .playerRow {
@@ -35,6 +51,18 @@
   border: 2px solid transparent;
 }
 
+.playerInfo {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1em;
+}
+
+.playerWin {
+  margin-left: 1em;
+  background-color: green;
+  border-radius: 1em;
+}
+
 .isOnAction {
   border: 2px solid yellow;
 }
@@ -50,6 +78,7 @@
   display: flex;
   flex-grow: 1;
   height: 84px;
+  width: 128px;
   justify-content: center;
 }
 

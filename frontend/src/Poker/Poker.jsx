@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/esm/Container';
 import Col from 'react-bootstrap/esm/Col';
 import Row from 'react-bootstrap/esm/Row';
 import { Redirect } from 'react-router-dom';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Button } from '@material-ui/core';
 import { PokerContext, LobbyContext } from '../Context';
 import styles from './Poker.module.css';
 import socket from '../Socket';
@@ -44,16 +44,19 @@ function Poker({ loggedIn }) {
       let isIn = false;
       if (pokerState.pokerRound) {
         pokerState.pokerRound.pokerActivePlayers.forEach((activePlayer, index) => {
-          if (element.playerName === activePlayer.playerName && index === 0) isDealer = true;
+          // if (element.playerName === activePlayer.playerName && index === 0) isDealer = true;
+          if (element.playerName === activePlayer.playerName && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
           if (element.playerName === activePlayer.playerName) stack = activePlayer.stack;
           if (element.playerName === activePlayer.playerName) isIn = true;
           if (element.playerName === activePlayer.playerName) currentBet = activePlayer.currentBet;
           if (element.playerName === activePlayer.playerName && activePlayer.currentAction === 'onAction') isOnAction = true;
         });
         pokerState.pokerRound.foldedPlayers.forEach((foldedPlayer) => {
+          if (element.playerName === foldedPlayer.playerName && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
           if (element.playerName === foldedPlayer.playerName) stack = foldedPlayer.stack;
         });
         pokerState.pokerRound.allInPlayers.forEach((allInPlayer) => {
+          if (element.playerName === allInPlayer.playerName && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
           if (element.playerName === allInPlayer.playerName) isIn = true;
           if (element.playerName === allInPlayer.playerName) stack = allInPlayer.stack;
           if (element.playerName === allInPlayer.playerName) currentBet = allInPlayer.currentBet;
@@ -87,17 +90,27 @@ function Poker({ loggedIn }) {
                   {pokerState.pokerRound.board.length !== 0 ? (
                     <>
                       {pokerState.pokerRound.board.map((card, index) => (
-                        <img key={index} className={styles.cardImage} src={`PokerImages/Images/${card}.png`} alt={`Card ${index + 1}`} />
+                        <img key={index} className={styles.cardImage} src={`CardImages/${card}.webp`} alt={`Card ${index + 1}`} />
                       ))}
                     </>
                   ) : null}
                 </Col>
               </>
-            ) : null}
+            ) : (
+              <Col className={styles.result}>
+                {pokerState.gameState.result}
+                {pokerState.gameState.result.includes('game') ? (
+                  <Button variant="contained" onClick={() => socket.emit('poker-new-game')}>
+                    Start New Game
+                  </Button>
+                ) : null}
+              </Col>
+            )}
           </Row>
 
           <Row className={styles.bottomRow}>
             <Col>
+              {/* <ChartContainer stackTrack={pokerState.gameState.serializedStackTrack} /> */}
               <Player handleAction={handleAction} />
             </Col>
           </Row>

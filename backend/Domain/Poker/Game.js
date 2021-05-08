@@ -1,4 +1,3 @@
-// const CalculateShowDown = require('./CalculateShowdown');
 const Deck = require('./Deck');
 const GameState = require('./GameState');
 
@@ -11,9 +10,12 @@ class Game {
   }
 
   createPokerRound() {
+    this.deck = new Deck(); // create a new Deck for each pokerRound
+    this.deck.setDeck();
     this.pokerRound = this.gameState.createPokerRound();
   }
 
+  // gets two cards for each player, and sends it out just to them.
   distributeHoleCards() {
     const holeCards = [];
     const cardMap = new Map();
@@ -25,60 +27,71 @@ class Game {
         card1,
         card2,
       });
+      // sets the playerName to an object with the hole cards that they have
       cardMap.set(element.playerName, { card1, card2 });
     });
+    // sets the cardMap, used for showdown
     this.pokerRound.cardMap = cardMap;
     return holeCards;
   }
 
   handlePlayStart() {
+    // starts the pokerROund by applying blinds, this makes the first two players bet
+    // as well as making the actionPlayer be action
     this.pokerRound.applyBlinds();
     return this.pokerRound;
   }
 
-  handleFold() {
-    const result = this.pokerRound.handleFold();
+  async handleFold() {
+    // causes fold on pokerRound then evaluates the result given
+    // results can be round-over, play-over, all-in
+    const result = await this.pokerRound.handleFold();
     return this.evaluateResult(result);
   }
 
-  handleCheck() {
-    const result = this.pokerRound.handleCheck();
+  async handleCheck() {
+    const result = await this.pokerRound.handleCheck();
     return this.evaluateResult(result);
   }
 
-  handleCall(amount) {
-    const result = this.pokerRound.handleCall(amount);
+  async handleCall(amount) {
+    const result = await this.pokerRound.handleCall(amount);
     return this.evaluateResult(result);
   }
 
-  handleRaise(amount) {
-    const result = this.pokerRound.handleRaise(amount);
+  async handleRaise(amount) {
+    const result = await this.pokerRound.handleRaise(amount);
     return this.evaluateResult(result);
   }
 
-  evaluateResult(result) {
+  async evaluateResult(result) {
+    // round-over, we need to update the board which may cause showdown, we are not sure atm
     if (result && result.type === 'round-over') {
-      this.updateBoard();
+      await this.updateBoard();
       return this.pokerRound;
     }
+    // the whole play is over, either showdown, or fold, we update the stacks from the pokerRound to the gameState, and return the new GameState
     if (result && result.type === 'play-over') {
-      this.handlePlayOver(result.updatedStacks);
+      await this.handlePlayOver(result.updatedStacks);
       return this.gameState;
     }
+    // its allin, meaning players do not have any more options they need to do and we need to automatically update the board until showdown
     if (result && result.type === 'all-in') {
       return this.handleAllIn();
     }
+    // default is pokerRound, if result is null
     return this.pokerRound;
   }
 
-  handleAllIn() {
+  async handleAllIn() {
     const states = [];
     while (this.pokerRound.whichRound !== 3) {
-      this.pokerRound.roundCleanup();
+      // eslint-disable-next-line no-await-in-loop
+      await this.pokerRound.roundCleanup();
       this.updateBoard();
       states.push(Game.clone(this.pokerRound));
     }
-    const result = this.pokerRound.roundCleanup();
+    const result = await this.pokerRound.roundCleanup();
     this.handlePlayOver(result.updatedStacks);
     states.push(this.gameState);
     return states;
@@ -88,12 +101,12 @@ class Game {
     this.gameState.updateStacks(updatedStacks);
   }
 
-  updateBoard() {
+  async updateBoard() {
     if (this.pokerRound.whichRound === 1) {
       // flop
-      this.pokerRound.updateBoard(this.deck.getThreeCards());
+      await this.pokerRound.updateBoard(this.deck.getThreeCards());
     } else {
-      this.pokerRound.updateBoard(this.deck.getACard());
+      await this.pokerRound.updateBoard(this.deck.getACard());
     }
   }
 

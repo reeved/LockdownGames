@@ -14,10 +14,12 @@ class PokerRound {
     this.whichRound = 0;
     this.cardMap = null;
     this.board = [];
+    this.dealerName = null;
     this.updatedStacks = new Map(); // from playerName to updatedStack
   }
 
   applyBlinds() {
+    this.dealerName = this.pokerActivePlayers[this.dealerIndex].playerName;
     if (this.pokerActivePlayers.length === 2) {
       this.onActionIndex = 0; // for heads-up
     }
@@ -45,10 +47,16 @@ class PokerRound {
     this.updatedStacks.set(playerFolding.playerName, playerFolding.stack);
     playerFolding = this.pokerActivePlayers.splice(this.onActionIndex, 1);
     this.foldedPlayers = this.foldedPlayers.concat(playerFolding);
+    if (this.onActionIndex === this.pokerActivePlayers.length) {
+      this.onActionIndex = 0; // end of the array
+    }
     if (this.checkAllIn()) {
       return { type: 'all-in' };
     }
     if (this.pokerActivePlayers.length === 1 && this.allInPlayers.length === 0) {
+      if (this.onActionIndex === this.pokerActivePlayers.length) {
+        this.onActionIndex = 0; // end of the array
+      }
       const lastPlayer = this.pokerActivePlayers[this.onActionIndex];
       this.updatedStacks.set(lastPlayer.playerName, lastPlayer.stack + this.pot + this.betsPot);
       return {
@@ -78,9 +86,18 @@ class PokerRound {
     return null;
   }
 
-  handleCall(amount) {
+  async handleCall(amount) {
     const playerCalling = this.pokerActivePlayers[this.onActionIndex];
     this.playerBet(playerCalling, amount);
+    if (playerCalling.stack === 0) {
+      this.pokerActivePlayers.splice(this.onActionIndex, 1);
+      this.allInPlayers = this.allInPlayers.concat(playerCalling);
+      if (this.onActionIndex === this.pokerActivePlayers.length) {
+        this.onActionIndex = 0; // end of the array
+      } else if (this.onActionIndex === this.dealerIndex) {
+        this.dealerIndex = -1; // now the first member of the array acts first, dealer is dead
+      }
+    }
     if (this.checkAllIn()) {
       return { type: 'all-in' };
     }
@@ -92,7 +109,7 @@ class PokerRound {
       onActionPlayer.currentAction === 'raise' ||
       onActionPlayer.currentAction === 'all-in'
     ) {
-      const status = this.roundCleanup();
+      const status = await this.roundCleanup();
       return status;
     }
     onActionPlayer.currentAction = 'onAction';
@@ -111,6 +128,9 @@ class PokerRound {
         this.dealerIndex = -1; // now the first member of the array acts first, dealer is dead
       }
     } else {
+      this.pokerActivePlayers.forEach((element) => {
+        element.currentAction = 'waiting';
+      });
       playerRaising.currentAction = 'raise';
       this.onActionIndex = (this.onActionIndex + 1) % this.pokerActivePlayers.length;
     }
@@ -118,22 +138,28 @@ class PokerRound {
   }
 
   checkAllIn() {
-    if (this.allInPlayers.length > 0 && this.pokerActivePlayers.length < 2 && this.whichRound !== 3) {
+    if (
+      this.pokerActivePlayers.length === 0 ||
+      (this.allInPlayers.length > 0 &&
+        this.pokerActivePlayers.length < 2 &&
+        this.whichRound !== 3 &&
+        this.pokerActivePlayers[this.onActionIndex].currentAction !== 'waiting')
+    ) {
       return true;
     }
     return false;
   }
 
-  updateBoard(newCards) {
+  async updateBoard(newCards) {
     this.board = this.board.concat(newCards);
   }
 
-  roundCleanup() {
+  async roundCleanup() {
     if (this.whichRound === 3) {
-      this.handleShowdown();
+      const updatedStacks = await this.handleShowdown();
       return {
         type: 'play-over',
-        updatedStacks: this.updatedStacks,
+        updatedStacks,
       };
     }
     this.pot += this.betsPot;
@@ -148,7 +174,7 @@ class PokerRound {
       element.currentAction = 'waiting';
       element.currentBet = 0;
     });
-    if (this.pokerActivePlayers.length !== 1) {
+    if (this.pokerActivePlayers.length !== 1 && this.pokerActivePlayers.length !== 0) {
       this.pokerActivePlayers[this.onActionIndex].currentAction = 'onAction';
     }
     return {
@@ -156,7 +182,7 @@ class PokerRound {
     };
   }
 
-  handleShowdown() {
+  async handleShowdown() {
     const showdown = new CalculateShowDown(
       this.board,
       this.pokerActivePlayers,
@@ -165,7 +191,8 @@ class PokerRound {
       this.cardMap,
       this.updatedStacks
     );
-    this.updatedStacks = showdown.distributeWinnings();
+    this.updatedStacks = await showdown.distributeWinnings();
+    return this.updatedStacks;
   }
   // calculateResult() {}
 

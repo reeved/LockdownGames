@@ -8,6 +8,8 @@ import { LobbyContext } from './Context';
 import useLobbyState from './Reducers/LobbyReducer';
 import WebsiteRoutes from './WebsiteRoutes';
 import ParticleConfig from './particles-config';
+import '@progress/kendo-theme-material/dist/all.css';
+import 'hammerjs';
 
 function App() {
   const { state: lobbyState, dispatch: lobbyDispatch } = useLobbyState();
