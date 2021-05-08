@@ -38,7 +38,6 @@ function joinLobby(io, socket, lobbyManager) {
       socket.emit('join-lobby', 4, 'Anon');
       return;
     }
-    console.log(`${nickname} Socket ID: ${socket.id}`);
     const player = new Player(nickname, socket.id, lobby.roomID, false);
     lobby.addPlayer(player);
     socket.join(lobby.roomID);

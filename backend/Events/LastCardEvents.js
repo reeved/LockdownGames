@@ -1,4 +1,4 @@
-const Game = require('../Domain/lastCard/Game');
+const Game = require('../Domain/LastCard/Game');
 
 // const Deck = require('../Domain/Poker/Deck');
 
