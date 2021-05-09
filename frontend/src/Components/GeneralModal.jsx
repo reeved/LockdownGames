@@ -12,17 +12,26 @@ function getModalStyle() {
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
+    borderRadius: '0.5em',
   };
 }
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
-    width: 800,
-    backgroundColor: theme.palette.background.paper,
+    height: '80vh',
+    width: '50vw',
+    backgroundColor: '#303030',
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  button: {
+    color: 'white',
+    backgroundColor: '#F72585',
+    '&:hover': {
+      backgroundColor: '#F966A8',
+    },
   },
 }));
 
@@ -40,7 +49,6 @@ export default function GeneralModal({ child, buttonText, buttonEvent }) {
     setOpen(false);
   };
   function handleButtonClick() {
-    console.log('button has been nsoignsion');
     if (buttonEvent) {
       buttonEvent();
     }
@@ -55,7 +63,7 @@ export default function GeneralModal({ child, buttonText, buttonEvent }) {
 
   return (
     <div>
-      <Button variant="contained" color="primary" type="button" onClick={() => handleButtonClick()}>
+      <Button variant="contained" className={classes.button} type="button" onClick={() => handleButtonClick()}>
         {buttonText}
       </Button>
       <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">

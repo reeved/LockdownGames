@@ -1,5 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import styles from './Components.module.css';
 
 const options = {
   scales: {
@@ -8,8 +9,17 @@ const options = {
         ticks: {
           beginAtZero: true,
         },
+        gridLines: {
+          zeroLineColor: '#ffcc33',
+        },
       },
     ],
+  },
+  legend: {
+    display: true,
+    labels: {
+      fontColor: '#ffffff',
+    },
   },
 };
 
@@ -37,10 +47,8 @@ function LineChart({ stackTrack }) {
   };
   return (
     <>
-      <div className="header">
-        <h1 className="title">Stack Track</h1>
-      </div>
-      <Line id="ben" data={data} options={options} />
+      <h1 className={styles.title}>Stack Track</h1>
+      <Line data={data} options={options} />
     </>
   );
 }

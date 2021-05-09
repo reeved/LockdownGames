@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { CircularProgress, AppBar, Tabs, Tab } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PokerStats from '../Stats/PokerStats';
 
@@ -15,11 +14,7 @@ function TabPanel(props) {
 
   return (
     <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
@@ -37,10 +32,10 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+    color: 'white',
   },
 }));
 

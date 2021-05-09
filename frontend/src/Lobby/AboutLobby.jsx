@@ -22,7 +22,7 @@ const AboutLobby = () => {
       </div>
       <div>
         <h5 className={styles.subHeading}>Game Size:</h5>
-        <p>4-8 Players</p>
+        <p>2-6 Players</p>
       </div>
     </div>
   );

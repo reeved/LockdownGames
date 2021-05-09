@@ -60,7 +60,6 @@ const Lobby = ({ loggedIn }) => {
   }
   return (
     <Container fluid className={styles.container}>
-      <h1>LOBBY</h1>
       <Row className={styles.gamesRow}>
         <Col xs={12}>
           <h2 className={styles.subheader}>{isHost ? 'Choose a Game' : 'Host is Choosing a Game'}</h2>

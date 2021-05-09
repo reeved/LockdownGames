@@ -76,17 +76,21 @@ function LastCard({ loggedIn }) {
         )}
       </Row>
       <Row className={styles.midRow}>
-        <Col className={styles.lastPlayed} style={{ visibility: !totalPickUp && 'hidden' }}>{`+${totalPickUp}`}</Col>
-        <Col className={styles.lastPlayed}>
-          {gameOver ? (
-            <Button onClick={() => socket.emit('lastcard-new-game')}>New Game! </Button>
-          ) : (
-            <>
-              <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />
-            </>
-          )}
-        </Col>
-        <Col className={styles.board}>{drawPile}</Col>
+        {gameOver ? (
+          <Button variant="contained" style={{ fontSize: '2em' }} onClick={() => socket.emit('lastcard-new-game')}>
+            New Game!
+          </Button>
+        ) : (
+          <>
+            <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
+            <Col className={styles.lastPlayed}>
+              <>
+                <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />
+              </>
+            </Col>
+            <Col className={styles.board}>{drawPile}</Col>
+          </>
+        )}
       </Row>
       <Row className={styles.bottomRow}>
         <Col className={`flexCol ${currentTurn !== nickname && 'disabled'}`}>

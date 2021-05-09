@@ -15,8 +15,9 @@ const Chatbox = () => {
       width: '100%',
     },
     input: {
-      fontSize: 'calc(5px + 1vmin)',
-      backgroundColor: 'white',
+      fontSize: 'calc(10px + 1vmin)',
+      backgroundColor: '#6d6d6d',
+      color: '#222222',
       flexGrow: '3',
     },
     button: {

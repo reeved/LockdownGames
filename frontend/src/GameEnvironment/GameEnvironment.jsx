@@ -25,7 +25,7 @@ const GameEnv = ({ loggedIn, component }) => {
 
   return (
     <>
-      <Container fluid style={{ maxWidth: '90vw', height: '80%' }}>
+      <Container fluid style={{ maxWidth: '90vw', height: '80vh' }}>
         <Row style={{ height: '100%' }}>
           <Col className={`${styles.Chat} flexCol`}>
             <h3>{component}</h3>

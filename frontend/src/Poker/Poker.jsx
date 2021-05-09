@@ -97,9 +97,13 @@ function Poker({ loggedIn }) {
               </>
             ) : (
               <Col className={styles.result}>
-                {pokerState.gameState.result}
+                <h1>{pokerState.gameState.result}</h1>
                 {pokerState.gameState.result.includes('game') ? (
-                  <Button variant="contained" onClick={() => socket.emit('poker-new-game')}>
+                  <Button
+                    style={{ width: '30%', margin: '1em auto', fontSize: '1.5em' }}
+                    variant="contained"
+                    onClick={() => socket.emit('poker-new-game')}
+                  >
                     Start New Game
                   </Button>
                 ) : null}

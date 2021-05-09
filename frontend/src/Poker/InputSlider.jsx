@@ -49,8 +49,9 @@ const useStyles = makeStyles({
     width: 250,
   },
   input: {
-    width: '60px',
+    width: '20%',
     margin: '0 2em',
+    fontSize: 'calc(14px + 2vmin)',
   },
   fold: {
     backgroundColor: '#d00000',
@@ -93,7 +94,7 @@ export default function InputSlider({ minRaise, maxRaise, handleBackButton, hand
 
   return (
     <div className={styles.raiseButtons}>
-      <div>
+      <div className={styles.easyButtonsContainer}>
         <Button variant="contained" onClick={() => setValue(minRaise)}>
           Min RAISE
         </Button>

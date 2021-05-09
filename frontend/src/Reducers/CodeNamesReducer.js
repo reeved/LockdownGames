@@ -19,8 +19,6 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  const { state: lobbyState } = useContext(LobbyContext);
-
   switch (action.type) {
     case 'init': {
       return {
@@ -37,8 +35,8 @@ const reducer = (state, action) => {
         words: action.words,
         redTeam: action.redTeam,
         blueTeam: action.blueTeam,
-        team: action.redTeam.includes(lobbyState.nickname) ? 'Red' : 'Blue',
-        nickname: lobbyState.nickname,
+        team: action.redTeam.includes(action.nickname) ? 'Red' : 'Blue',
+        nickname: action.nickname,
         sessionWin: state.sessionWin,
         sessionLoss: state.sessionLoss,
       };
@@ -88,6 +86,7 @@ const reducer = (state, action) => {
 };
 
 export default function useCodenamesState() {
+  const { state: lobbyState } = useContext(LobbyContext);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   /**
@@ -108,6 +107,7 @@ export default function useCodenamesState() {
         selectedWords: [],
         redTeam,
         blueTeam,
+        nickname: lobbyState.nickname,
       });
     }
 
