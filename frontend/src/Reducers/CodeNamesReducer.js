@@ -74,9 +74,6 @@ const reducer = (state, action) => {
     }
 
     case 'game-over': {
-      console.log('Game is over');
-      // eslint-disable-next-line eqeqeq
-      console.log('Winner:', action.winningTeam, 'Team:', state.team, action.winningTeam != state.team);
       return {
         ...state,
         isGameOver: true,

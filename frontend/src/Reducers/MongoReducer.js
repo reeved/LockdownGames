@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useReducer, useEffect, useContext } from 'react';
+import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
 const initialState = {

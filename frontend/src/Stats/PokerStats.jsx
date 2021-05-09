@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { Button } from '@material-ui/core';
 import React from 'react';
 import GeneralModal from '../Components/GeneralModal';
 import LineChart from '../Components/LineChart';
 
 export default function PokerStats({ pokerStats }) {
-  const { gameName, winnerName } = pokerStats;
   const gameArray = [];
   pokerStats.forEach((element) => {
     gameArray.push(

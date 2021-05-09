@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useContext, React } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Col from 'react-bootstrap/esm/Col';
@@ -43,7 +42,7 @@ function Poker({ loggedIn }) {
       let isDealer = false;
       let isIn = false;
       if (pokerState.pokerRound) {
-        pokerState.pokerRound.pokerActivePlayers.forEach((activePlayer, index) => {
+        pokerState.pokerRound.pokerActivePlayers.forEach((activePlayer) => {
           // if (element.playerName === activePlayer.playerName && index === 0) isDealer = true;
           if (element.playerName === activePlayer.playerName && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
           if (element.playerName === activePlayer.playerName) stack = activePlayer.stack;

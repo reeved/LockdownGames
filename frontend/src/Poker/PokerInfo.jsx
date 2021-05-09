@@ -4,7 +4,6 @@ import GeneralModal from '../Components/GeneralModal';
 import LineChart from '../Components/LineChart';
 
 const PokerInfo = ({ styles }) => {
-  // eslint-disable-next-line no-unused-vars
   const { state: pokerState } = useContext(PokerContext);
 
   return (

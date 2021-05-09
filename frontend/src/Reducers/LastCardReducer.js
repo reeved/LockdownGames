@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useReducer, useEffect } from 'react';
 import socket from '../Socket';
 
@@ -160,7 +159,6 @@ export default function useCodenamesState() {
     socket.on('lastcard-new-game', newLastCardGame);
     socket.on('lastcard-update-hand', drawCard);
     socket.on('lastcard-card-played', playCard);
-    // socket.on('lastcard-player-finished', setPlayerFinished);
     socket.on('lastcard-change-turn', changeTurn);
     socket.on('lastcard-game-over', gameOver);
 
@@ -168,7 +166,6 @@ export default function useCodenamesState() {
       socket.removeListener('lastcard-new-game', newLastCardGame);
       socket.removeListener('lastcard-update-hand', drawCard);
       socket.removeListener('lastcard-card-played', playCard);
-      // socket.removeListener('lastcard-player-finished', setPlayerFinished);
       socket.removeListener('lastcard-change-turn', changeTurn);
       socket.removeListener('lasrcard-game-over', gameOver);
     };
