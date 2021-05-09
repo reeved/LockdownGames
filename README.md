@@ -1,8 +1,6 @@
 # Group-13-Emerald-Elephant
 
 ## About
-Welcome to the **Lockdown Games** wiki.   
-
 Lockdown Games is a social game website, currently featuring three games - Codenames, Poker and Last Card. Lockdown Games is designed to allow you to have fun with your friends, even when you can't see each other in person. It provides multiple games which are great to play with friends, alongside a chat and invitation system, giving you the best social experience possible alongside the games themselves.
 
 Review the [documentation](https://github.com/csdoris/Group-13-Emerald-Elephant/wiki) for more information and guidelines on our application.
