@@ -28,6 +28,23 @@ class Mongo {
       await this.client.close();
     }
   }
+
+  async retrieveGames(gameName) {
+    try {
+      await this.client.connect();
+      const database = this.client.db('lockdowngames');
+      const games = database.collection('games');
+
+      const result = await games
+        .find({
+          gameName,
+        })
+        .toArray();
+      return result;
+    } finally {
+      await this.client.close();
+    }
+  }
 }
 
 module.exports = Mongo;
