@@ -1,6 +1,5 @@
 import { React } from 'react';
 import { Button, makeStyles } from '@material-ui/core';
-// import styles from './Player.module.css';
 
 function ActionButtons({ handleAction, isOnAction, pokerRound, currentBet, handleRaise, stack }) {
   const useStyles = makeStyles({

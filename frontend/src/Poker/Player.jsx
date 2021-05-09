@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { React, useContext, useState } from 'react';
 import styles from './Player.module.css';
 import { LobbyContext, PokerContext } from '../Context';
@@ -30,7 +29,7 @@ const Player = ({ handleAction }) => {
     if (element.playerName === nickname) stack = player.stack;
   });
   if (pokerState.pokerRound) {
-    pokerState.pokerRound.pokerActivePlayers.forEach((element, index) => {
+    pokerState.pokerRound.pokerActivePlayers.forEach((element) => {
       if (element.playerName === nickname) player = element;
       if (element.playerName === nickname) stack = element.stack;
       if (element.playerName === nickname) currentBet = element.currentBet;

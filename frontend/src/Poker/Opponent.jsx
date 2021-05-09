@@ -1,13 +1,7 @@
-/* eslint-disable no-unused-vars */
-import { React, useContext } from 'react';
+import { React } from 'react';
 import styles from './Player.module.css';
-import { LobbyContext } from '../Context';
 
 const Opponent = ({ playerName, stack, currentBet, isOnAction, isDealer, isIn }) => {
-  const { state: lobbyState } = useContext(LobbyContext);
-
-  const { nickname, players } = lobbyState;
-
   const cards = ['AH', 'QS'];
   return (
     <>
