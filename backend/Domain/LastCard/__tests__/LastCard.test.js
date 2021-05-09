@@ -1,5 +1,5 @@
 import Player from '../../Player';
-import Deck from '../../Poker/Deck';
+import Deck from '../../Common/Deck';
 import Game from '../Game';
 import LastCardPlayer from '../LastCardPlayer';
 

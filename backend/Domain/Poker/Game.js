@@ -1,4 +1,4 @@
-const Deck = require('./Deck');
+const Deck = require('../Common/Deck');
 const GameState = require('./GameState');
 
 class Game {

@@ -1,4 +1,4 @@
-const Deck = require('../Poker/Deck');
+const Deck = require('../Common/Deck');
 const LastCardPlayer = require('./LastCardPlayer');
 
 // eslint-disable-next-line no-unused-vars
