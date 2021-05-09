@@ -92,7 +92,9 @@ const Player = ({ setSelected }) => {
             if (currentSelectedCard) {
               isActive = cardValue === currentSelectedCard.slice(0, -1);
             } else {
-              isActive = cardValue === 'A' || cardValue === currentValue || cardSuit === currentSuit;
+              isActive =
+                (cardValue === 'A' || cardValue === currentValue || cardSuit === currentSuit) &&
+                !((mustPlay5 && cardValue !== '5') || (mustPlay2 && cardValue !== '2'));
             }
 
             const isSelected = selectedCards.includes(card);
@@ -116,59 +118,29 @@ const Player = ({ setSelected }) => {
           })}
         </div>
         <div className={`${styles.buttonContainer}`}>
-          {acePlayed ? (
-            <>
-              <Button
-                className={`${classes.button} ${classes.confirm}`}
-                variant="contained"
-                disableRipple
-                disabled={
-                  currentTurn !== nickname ||
-                  selectedCards.length === 0 ||
-                  (mustPlay5 && selectedCards[0].slice(0, -1) !== '5') ||
-                  (mustPlay2 && selectedCards[0].slice(0, -1) !== '2')
-                }
-                onClick={() => confirmHandler()}
-              >
-                CONFIRM COLOUR
-              </Button>
-              <Button
-                className={`${classes.button} ${classes.draw}`}
-                disabled={currentTurn !== nickname}
-                variant="contained"
-                disableRipple
-                onClick={() => cancelHandler()}
-              >
-                CANCEL
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                className={`${classes.button} ${classes.confirm}`}
-                variant="contained"
-                disableRipple
-                disabled={
-                  currentTurn !== nickname ||
-                  selectedCards.length === 0 ||
-                  (mustPlay5 && selectedCards[0].slice(0, -1) !== '5') ||
-                  (mustPlay2 && selectedCards[0].slice(0, -1) !== '2')
-                }
-                onClick={() => confirmHandler()}
-              >
-                Confirm
-              </Button>
-              <Button
-                className={`${classes.button} ${classes.draw}`}
-                disabled={currentTurn !== nickname || gameOver}
-                variant="contained"
-                disableRipple
-                onClick={() => cancelHandler()}
-              >
-                Draw/Skip
-              </Button>
-            </>
-          )}
+          <Button
+            className={`${classes.button} ${classes.confirm}`}
+            variant="contained"
+            disableRipple
+            disabled={
+              currentTurn !== nickname ||
+              selectedCards.length === 0 ||
+              (mustPlay5 && selectedCards[0].slice(0, -1) !== '5') ||
+              (mustPlay2 && selectedCards[0].slice(0, -1) !== '2')
+            }
+            onClick={() => confirmHandler()}
+          >
+            {acePlayed ? 'CONFIRM SUIT' : 'Confirm'}
+          </Button>
+          <Button
+            className={`${classes.button} ${classes.draw}`}
+            disabled={currentTurn !== nickname || (gameOver && !acePlayed)}
+            variant="contained"
+            disableRipple
+            onClick={() => cancelHandler()}
+          >
+            {acePlayed ? 'CANCEL' : 'Draw/Skip'}
+          </Button>
         </div>
       </div>
     </>
