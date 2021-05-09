@@ -8,11 +8,13 @@
 
 .gameOverInfo {
   align-self: end;
+  color: white;
 }
 
 .currentScoreIndicator {
   grid-column-start: 1;
-  font-size: calc((7vmin - 1rem) / 3);
+  font-size: 1.5em;
+  color: white;
 }
 
 .currentTurnIndicator {
@@ -20,6 +22,8 @@
   text-transform: capitalize;
   margin: 0;
   margin-bottom: 1em;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 
 .endTurnButton {

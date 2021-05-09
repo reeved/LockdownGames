@@ -27,7 +27,7 @@ const lobbyManager = new LobbyManager();
 
 io.on('connection', (socket) => {
   console.log('A new user has connected.');
-  loadCodenamesEvents(io, socket);
+  loadCodenamesEvents(io, socket, lobbyManager);
   loadLobbyEvents(io, socket, lobbyManager);
   loadPokerEvents(io, socket, lobbyManager);
   loadLastCardEvents(io, socket, lobbyManager);

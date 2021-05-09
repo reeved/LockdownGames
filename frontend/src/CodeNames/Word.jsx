@@ -8,6 +8,7 @@ import { CodenamesContext } from '../Context';
 const useStyles = makeStyles({
   UnsafeWord: {
     backgroundColor: ({ isGameOver, isSelected }) => (isGameOver && !isSelected ? 'rgba(222,184,135,0.5)' : 'rgba(222,184,135)'),
+    color: 'black',
   },
 
   BombWord: {
@@ -25,8 +26,8 @@ const useStyles = makeStyles({
     color: 'white !important',
   },
   UnselectedWord: {
-    backgroundColor: 'white',
-    color: 'black',
+    backgroundColor: '#494949',
+    color: 'white',
   },
 });
 
@@ -51,15 +52,14 @@ const Word = ({ item }) => {
   const handleWordClick = (el) => {
     socket.emit('codenames-update-selected', el.id);
     if (el.status === 'bomb') {
-      socket.emit('codenames-game-over');
-    } else if (el.status === 'unsafe' || el.status !== currentTeam) {
-      if (el.status !== currentTeam) {
-        socket.emit('codenames-decrement-score', el.status);
-      }
+      socket.emit('codenames-game-over', currentTeam === 'Red' ? 'Blue' : 'Red');
+    } else if (el.status === 'unsafe') {
       socket.emit('codenames-change-turn', currentTeam);
     } else if (el.status === 'Red' || el.status === 'Blue') {
       if ((el.status === 'Red' && gameState.redScore === 1) || (el.status === 'Blue' && gameState.blueScore === 1)) {
         socket.emit('codenames-game-over', el.status);
+      } else if (el.status !== currentTeam) {
+        socket.emit('codenames-change-turn', currentTeam);
       }
       socket.emit('codenames-decrement-score', el.status);
     }

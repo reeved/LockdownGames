@@ -1,19 +1,26 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useContext } from 'react';
 import socket from '../Socket';
+import { LobbyContext } from '../Context';
 
 const initialState = {
   nickname: 'Anon',
   team: 'blue',
+  redTeam: [],
+  blueTeam: [],
   isSpyMaster: false,
   currentTurn: 'Red',
-  redScore: 8,
+  redScore: 9,
   blueScore: 8,
   isGameOver: false,
   words: null,
   selectedItems: [],
+  sessionWin: 0,
+  sessionLoss: 0,
 };
 
 const reducer = (state, action) => {
+  const { state: lobbyState } = useContext(LobbyContext);
+
   switch (action.type) {
     case 'init': {
       return {
@@ -23,10 +30,17 @@ const reducer = (state, action) => {
 
     case 'new-codenames': {
       console.log('Received new game from server.');
-      console.log(action.words);
+      console.log(action);
+      console.log('Nickname:', state.nickname);
       return {
         ...initialState,
         words: action.words,
+        redTeam: action.redTeam,
+        blueTeam: action.blueTeam,
+        team: action.redTeam.includes(lobbyState.nickname) ? 'Red' : 'Blue',
+        nickname: lobbyState.nickname,
+        sessionWin: state.sessionWin,
+        sessionLoss: state.sessionLoss,
       };
     }
 
@@ -60,9 +74,14 @@ const reducer = (state, action) => {
     }
 
     case 'game-over': {
+      console.log('Game is over');
+      // eslint-disable-next-line eqeqeq
+      console.log('Winner:', action.winningTeam, 'Team:', state.team, action.winningTeam != state.team);
       return {
         ...state,
         isGameOver: true,
+        sessionWin: action.winningTeam === state.team ? state.sessionWin + 1 : state.sessionWin,
+        sessionLoss: action.winningTeam !== state.team ? state.sessionLoss + 1 : state.sessionLoss,
       };
     }
 
@@ -85,11 +104,13 @@ export default function useCodenamesState() {
   }, []);
 
   useEffect(() => {
-    function newCodenamesGame(boardWords) {
+    function newCodenamesGame(boardWords, redTeam, blueTeam) {
       dispatch({
         type: 'new-codenames',
         words: boardWords,
         selectedWords: [],
+        redTeam,
+        blueTeam,
       });
     }
 
@@ -114,9 +135,10 @@ export default function useCodenamesState() {
       });
     }
 
-    function setGameOver() {
+    function setGameOver(winningTeam) {
       dispatch({
         type: 'game-over',
+        winningTeam,
       });
     }
 

@@ -20,9 +20,11 @@ function shuffle(array) {
   return array;
 }
 
-function newGame(io, socket) {
+function newGame(io, socket, lobbyManager) {
   socket.on('codenames-new-game', () => {
     const roomID = socket.player.lobbyID;
+    const lobby = lobbyManager.lobbies.get(roomID);
+    const players = shuffle(lobby.getPlayerNicknames());
     const numWords = 24;
     const shuffledWords = shuffle(words);
     let boardWords = shuffledWords.slice(0, numWords);
@@ -30,7 +32,7 @@ function newGame(io, socket) {
     for (let i = 0; i < 24; i += 1) {
       if (i === 23) {
         boardWords[i].status = 'bomb';
-      } else if (i > 15) {
+      } else if (i > 16) {
         boardWords[i].status = 'unsafe';
       } else if (i > 7) {
         boardWords[i].status = 'Red';
@@ -41,7 +43,14 @@ function newGame(io, socket) {
 
     boardWords = shuffle(boardWords);
 
-    io.in(roomID).emit('codenames-new-codenames', boardWords);
+    const half = Math.ceil(players.length / 2);
+
+    const redTeam = players.splice(0, half);
+    const blueTeam = players.splice(-half);
+
+    console.log('Players:', players, 'RedTeam:', redTeam, 'BlueTeam: ', blueTeam);
+
+    io.in(roomID).emit('codenames-new-codenames', boardWords, redTeam, blueTeam);
   });
 }
 
@@ -67,14 +76,15 @@ function changeTurn(io, socket) {
 }
 
 function setGameOver(io, socket) {
-  socket.on('codenames-game-over', () => {
+  socket.on('codenames-game-over', (winningTeam) => {
     const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('codenames-game-over');
+    console.log('Winner: ', winningTeam);
+    io.in(roomID).emit('codenames-game-over', winningTeam);
   });
 }
 
-module.exports = function exp(io, socket) {
-  newGame(io, socket);
+module.exports = function exp(io, socket, lobbyManager) {
+  newGame(io, socket, lobbyManager);
   decrementScore(io, socket);
   setGameOver(io, socket);
   updateSelected(io, socket);
