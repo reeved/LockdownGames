@@ -76,7 +76,7 @@ function LastCard({ loggedIn }) {
         )}
       </Row>
       <Row className={styles.midRow}>
-        <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
+        <Col className={styles.lastPlayed} style={{ visibility: !totalPickUp && 'hidden' }}>{`+${totalPickUp}`}</Col>
         <Col className={styles.lastPlayed}>
           {gameOver ? (
             <Button onClick={() => socket.emit('lastcard-new-game')}>New Game! </Button>
