@@ -17,7 +17,6 @@ function updateUser(io, socket) {
   socket.on('user-id', async ({ gameID, userID }) => {
     const mongo = new Mongo();
     const user = await mongo.getUserGames(userID);
-    console.log(user);
     if (!user.gameArray) {
       const gameArray = [];
       gameArray.push(gameID);
@@ -32,5 +31,4 @@ function updateUser(io, socket) {
 
 module.exports = function exp(io, socket) {
   getStats(io, socket);
-  updateUser(io, socket);
 };

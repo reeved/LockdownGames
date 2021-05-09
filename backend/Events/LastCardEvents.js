@@ -137,16 +137,8 @@ function playCard(io, socket, lobbyManager) {
   });
 }
 
-// function playerFinished(io, socket) {
-//   socket.on('lastcard-player-finished', (player) => {
-//     const roomID = socket.player.lobbyID;
-//     io.in(roomID).emit('lastcard-player-finished', player);
-//   });
-// }
-
 module.exports = function exp(io, socket, lobbyManager) {
   newLastCardGame(io, socket, lobbyManager);
   playCard(io, socket, lobbyManager);
   drawCard(io, socket, lobbyManager);
-  // playerFinished(io, socket, lobbyManager);
 };

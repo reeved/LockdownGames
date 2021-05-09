@@ -20,9 +20,7 @@ class Mongo {
         winnerName,
         date: Date(),
       };
-      const result = await games.insertOne(doc);
-
-      console.log(`${result.insertedCount} documents were inserted with the _id: ${result.insertedId}`);
+      await games.insertOne(doc);
     } finally {
       // Ensures that the client will close when you finish/error
       await this.client.close();

@@ -1,18 +1,8 @@
-/* eslint-disable no-use-before-define */
 const Game = require('../Domain/Poker/Game');
 const GameState = require('../Domain/Poker/GameState');
 const PokerRound = require('../Domain/Poker/PokerRound');
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-function startGame(io, socket, lobbyManager) {
-  socket.on('poker-new-game', () => {
-    const { lobbyID } = socket.player; // lobbyID
-    const lobby = lobbyManager.getLobby(lobbyID);
-    lobby.game = new Game(lobby.players); // Initialises Game with Players in the lobby;
-    startPlay(io, lobbyID, lobby); // starts the game. This is called whenever a 'play' is finished
-  });
-}
 
 function startPlay(io, lobbyID, lobby) {
   lobby.game.createPokerRound(); // start of one 'play' a round is created
@@ -30,6 +20,15 @@ function startPlay(io, lobbyID, lobby) {
   });
   const pokerRound = lobby.game.handlePlayStart(); // applys blinds to the internal pokerRound
   io.in(lobbyID).emit('poker-round', pokerRound); // sends initial round state to everyone
+}
+
+function startGame(io, socket, lobbyManager) {
+  socket.on('poker-new-game', () => {
+    const { lobbyID } = socket.player; // lobbyID
+    const lobby = lobbyManager.getLobby(lobbyID);
+    lobby.game = new Game(lobby.players); // Initialises Game with Players in the lobby;
+    startPlay(io, lobbyID, lobby); // starts the game. This is called whenever a 'play' is finished
+  });
 }
 
 async function handlePokerAction(io, socket, lobbyManager) {
