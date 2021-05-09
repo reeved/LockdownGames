@@ -3,7 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
-import ChartContainer from '../Components/ChartContainer';
+import LineChart from '../Components/LineChart';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -49,7 +49,7 @@ export default function ModalGraph({ stackTrack }) {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <ChartContainer stackTrack={stackTrack} />
+      <LineChart stackTrack={stackTrack} />
     </div>
   );
 
