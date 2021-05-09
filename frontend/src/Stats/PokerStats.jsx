@@ -9,7 +9,7 @@ export default function PokerStats({ pokerStats }) {
   const gameArray = [];
   pokerStats.forEach((element) => {
     gameArray.push(
-      <div>
+      <div key={element.date}>
         <Button>
           {element.gameName} - {element.winnerName} - {element.date}
         </Button>

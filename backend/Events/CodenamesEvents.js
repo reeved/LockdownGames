@@ -1,4 +1,5 @@
 const words = require('../ServerResources/wordlist.js');
+const Mongo = require('../Mongo');
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -77,6 +78,8 @@ function changeTurn(io, socket) {
 
 function setGameOver(io, socket) {
   socket.on('codenames-game-over', (winningTeam) => {
+    const mongo = new Mongo();
+    mongo.createGame('Codenames', null, winningTeam);
     const roomID = socket.player.lobbyID;
     console.log('Winner: ', winningTeam);
     io.in(roomID).emit('codenames-game-over', winningTeam);

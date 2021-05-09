@@ -6,9 +6,10 @@ function getStats(io, socket) {
     const mongo = new Mongo();
     const socketID = socket.id;
     const pokerGames = await mongo.retrieveGames('poker');
+    // const codenameGames = await mongo.retrieveGames('Codenames');
     io.in(socketID).emit('poker-stats', pokerGames);
-    io.in(socketID).emit('codename-stats', 'CODENAMEDATA');
-    io.in(socketID).emit('last-card-stats', 'LASCERDATA');
+    io.in(socketID).emit('codename-stats', 'Codename Data');
+    io.in(socketID).emit('last-card-stats', 'LastCard Data');
   });
 }
 
