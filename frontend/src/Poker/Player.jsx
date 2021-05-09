@@ -63,7 +63,7 @@ const Player = ({ handleAction }) => {
     <div className={styles.playerRow}>
       <div className={styles.playerContainer}>
         <div className={styles.betContainer}>
-          {isDealer ? <img className={styles.dealerButton} src="CardImages/dealer.webp" alt="dealer" /> : null}
+          {isDealer ? <img className={styles.dealerButton} src="CardImages/dealer.png" alt="dealer" /> : null}
           {currentBet && currentBet !== 0 ? (
             <div className={styles.bet}>
               <p>{currentBet}</p>
