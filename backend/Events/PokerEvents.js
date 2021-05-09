@@ -1,18 +1,8 @@
-/* eslint-disable no-use-before-define */
 const Game = require('../Domain/Poker/Game');
 const GameState = require('../Domain/Poker/GameState');
 const PokerRound = require('../Domain/Poker/PokerRound');
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-function startGame(io, socket, lobbyManager) {
-  socket.on('poker-new-game', () => {
-    const { lobbyID } = socket.player; // lobbyID
-    const lobby = lobbyManager.getLobby(lobbyID);
-    lobby.game = new Game(lobby.players); // Initialises Game with Players in the lobby;
-    startPlay(io, lobbyID, lobby); // starts the game. This is called whenever a 'play' is finished
-  });
-}
 
 function startPlay(io, lobbyID, lobby) {
   lobby.game.createPokerRound(); // start of one 'play' a round is created
@@ -30,6 +20,15 @@ function startPlay(io, lobbyID, lobby) {
   });
   const pokerRound = lobby.game.handlePlayStart(); // applys blinds to the internal pokerRound
   io.in(lobbyID).emit('poker-round', pokerRound); // sends initial round state to everyone
+}
+
+function startGame(io, socket, lobbyManager) {
+  socket.on('poker-new-game', () => {
+    const { lobbyID } = socket.player; // lobbyID
+    const lobby = lobbyManager.getLobby(lobbyID);
+    lobby.game = new Game(lobby.players); // Initialises Game with Players in the lobby;
+    startPlay(io, lobbyID, lobby); // starts the game. This is called whenever a 'play' is finished
+  });
 }
 
 async function handlePokerAction(io, socket, lobbyManager) {
@@ -61,7 +60,7 @@ async function handlePokerAction(io, socket, lobbyManager) {
       io.in(lobbyID).emit('poker-game-state', newState);
       await delay(5000);
       // checks to see if only one person has a stack, before starting next round
-      if (!lobby.game.gameState.isGameOver()) startPlay(io, lobbyID);
+      if (!lobby.game.gameState.isGameOver()) startPlay(io, lobbyID, lobby);
     } else if (newState instanceof Array) {
       // this is allIn, new State contains all the pokerRounds and the final GameState
       for (let i = 0; i < newState.length - 1; i += 1) {
@@ -72,7 +71,7 @@ async function handlePokerAction(io, socket, lobbyManager) {
       // the final gameState
       io.in(lobbyID).emit('poker-game-state', newState[newState.length - 1]);
       await delay(4000);
-      if (!lobby.game.gameState.isGameOver()) startPlay(io, lobbyID);
+      if (!lobby.game.gameState.isGameOver()) startPlay(io, lobbyID, lobbyID);
       // this updates the result field to say who won.
       else io.in(lobbyID).emit('poker-game-state', lobby.game.gameState);
     } else {

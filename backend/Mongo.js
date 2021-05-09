@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 
 class Mongo {
   constructor() {
-    this.uri = 'mongodb+srv://Daniel:LockdownGames@lockdowngamesusers.yf5xv.mongodb.net/generala?retryWrites=true&w=majority';
+    this.uri = 'mongodb+srv://Daniel:LockdownGames@lockdowngamesusers.yf5xv.mongodb.net/lockdowngames?retryWrites=true&w=majority';
     this.client = new MongoClient(this.uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -12,7 +12,7 @@ class Mongo {
   async createGame(gameName, stackTrack, winnerName) {
     try {
       await this.client.connect();
-      const database = this.client.db('generala');
+      const database = this.client.db('lockdowngames');
       const games = database.collection('games');
       const doc = {
         gameName,
@@ -20,9 +20,7 @@ class Mongo {
         winnerName,
         date: Date(),
       };
-      const result = await games.insertOne(doc);
-
-      console.log(`${result.insertedCount} documents were inserted with the _id: ${result.insertedId}`);
+      await games.insertOne(doc);
     } finally {
       // Ensures that the client will close when you finish/error
       await this.client.close();
@@ -34,7 +32,6 @@ class Mongo {
       await this.client.connect();
       const database = this.client.db('lockdowngames');
       const games = database.collection('games');
-
       const result = await games
         .find({
           gameName,
