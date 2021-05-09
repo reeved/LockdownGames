@@ -1,5 +1,12 @@
 const BackendServer = require('../index');
 const { createLobby, joinLobby, sendAndReceiveMessage } = require('./LobbyEventTestHelpers');
+const {
+  checkCodenamesDecrementScore,
+  checkUpdateSelectedCodenames,
+  checkCodenamesTurnChanged,
+  checkCodenamesGameOver,
+  checkCodenamesCreation,
+} = require('./CodenamesEventTestHelpers');
 
 describe('LobbyEvent Socket Testing', () => {
   const port = process.env.PORT || 6001;
@@ -94,6 +101,39 @@ describe('LobbyEvent Socket Testing', () => {
     return sendAndReceiveMessage(lobbyPlayers, port, lobbyCode).then((message) => {
       expect(message.sender).toBe('Reeve:');
       expect(message.msg).toBe('Hello World');
+    });
+  });
+
+  test('Decrementing score in codenames', () => {
+    return checkCodenamesDecrementScore(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
+      expect(result).toBe('Red');
+    });
+  });
+
+  test('Updating selected item in codenames', () => {
+    return checkUpdateSelectedCodenames(lobbyPlayers, port, lobbyCode, 5).then((result) => {
+      expect(result).toBe(5);
+    });
+  });
+
+  test('Changing turn in codenames', () => {
+    return checkCodenamesTurnChanged(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
+      expect(result).toBe('Blue');
+    });
+  });
+
+  test('Game over in codenames', () => {
+    return checkCodenamesGameOver(lobbyPlayers, port, lobbyCode, 'Blue').then((result) => {
+      expect(result).toBe('Blue');
+    });
+  });
+
+  test('Creating new codenames game', () => {
+    return checkCodenamesCreation(lobbyPlayers, port, lobbyCode).then((results) => {
+      expect(results.board).toHaveLength(24);
+      // 5 users total (4 in test call + 1 on test setup - division should be 3/2 red/blue for odd number)
+      expect(results.redTeam).toHaveLength(3);
+      expect(results.blueTeam).toHaveLength(2);
     });
   });
 });

@@ -1,4 +1,5 @@
 const Client = require('socket.io-client');
+// const LobbyEvents = require('../Events/LobbyEvents');
 
 /**
  * Host connects and creates lobby
