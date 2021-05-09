@@ -2,15 +2,12 @@ const Game = require('../Domain/LastCard/Game');
 
 function newLastCardGame(io, socket, lobbyManager) {
   socket.on('lastcard-new-game', () => {
-    // eslint-disable-next-line no-console
-    console.log('BACKEND START GAME');
     const { lobbyID } = socket.player;
     const lobby = lobbyManager.getLobby(lobbyID);
     lobby.game = new Game(lobby.players);
     lobby.players.forEach((element) => {
       io.in(element.socketID).emit('lastcard-update-hand', lobby.game.deck.getLastCardHand());
     });
-    // io.in(lobbyID).emit('lastcard-new-game', lobby.game.players, lobby.game.deck.getACard());
     io.in(lobbyID).emit('lastcard-new-game', lobby.game.players, lobby.game.deck.getACard().toString());
   });
 }
@@ -42,7 +39,7 @@ function drawCard(io, socket, lobbyManager) {
       direction >= 0 ? (count += 1) : (count -= 1);
 
       if (Math.abs(count) === lobby.players.length) {
-        io.in(lobbyID).emit('game-over', true);
+        io.in(lobbyID).emit('game-over', true, lobby.game.players);
       }
     }
     let amountPickedup = 0;
@@ -117,7 +114,7 @@ function playCard(io, socket, lobbyManager) {
       direction >= 0 ? (count += 1) : (count -= 1);
     }
     // console.log(lobby.game.players);
-    if (card.slice(0, -1) !== '5' && card.slice(0, -1) !== '2' && lobby.game.players[gameIndex].handSize === 0) {
+    if (lobby.game.players[gameIndex].handSize === 0) {
       playerFin = false;
       lobby.game.players[gameIndex].isPlaying = false;
     }
@@ -135,22 +132,21 @@ function playCard(io, socket, lobbyManager) {
     const numOfPlayersPlaying = lobby.game.players.filter((p) => p.isPlaying === true);
 
     if (numOfPlayersPlaying.length === 1) {
-      console.log(lobby.game.players);
       io.in(lobbyID).emit('lastcard-game-over', true, lobby.game.players);
     }
   });
 }
 
-function playerFinished(io, socket) {
-  socket.on('lastcard-player-finished', (player) => {
-    const roomID = socket.player.lobbyID;
-    io.in(roomID).emit('lastcard-player-finished', player);
-  });
-}
+// function playerFinished(io, socket) {
+//   socket.on('lastcard-player-finished', (player) => {
+//     const roomID = socket.player.lobbyID;
+//     io.in(roomID).emit('lastcard-player-finished', player);
+//   });
+// }
 
 module.exports = function exp(io, socket, lobbyManager) {
   newLastCardGame(io, socket, lobbyManager);
   playCard(io, socket, lobbyManager);
   drawCard(io, socket, lobbyManager);
-  playerFinished(io, socket, lobbyManager);
+  // playerFinished(io, socket, lobbyManager);
 };

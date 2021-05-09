@@ -29,7 +29,7 @@ const GameEnv = ({ loggedIn, component }) => {
         <Row style={{ height: '100%' }}>
           <Col className={`${styles.Chat} flexCol`}>
             <h3>{component}</h3>
-            <GameInfo />
+            <GameInfo gameName={component} />
           </Col>
           <Col xs={7}>{calledComponent}</Col>
           <Col className={`${styles.Chat} flexCol`}>

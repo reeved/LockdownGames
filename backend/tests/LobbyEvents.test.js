@@ -1,4 +1,5 @@
 const BackendServer = require('../index');
+const { startLastCardGame, playCard, drawCard } = require('./LastCardEventsTestHelper');
 const { createLobby, joinLobby, sendAndReceiveMessage } = require('./LobbyEventTestHelpers');
 const {
   checkCodenamesDecrementScore,
@@ -104,27 +105,27 @@ describe('LobbyEvent Socket Testing', () => {
     });
   });
 
-  test('Decrementing score in codenames', () => {
-    return checkCodenamesDecrementScore(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
-      expect(result).toBe('Red');
+  test('LAST CARD - Starting a Game', () => {
+    return startLastCardGame(lobbyPlayers, port, lobbyCode).then((data) => {
+      expect(data.gamePlayers[0].name).toBe('Reeve0');
     });
   });
 
-  test('Updating selected item in codenames', () => {
-    return checkUpdateSelectedCodenames(lobbyPlayers, port, lobbyCode, 5).then((result) => {
-      expect(result).toBe(5);
+  test('LAST CARD - Playing a Card', () => {
+    joinLobby(lobbyPlayers, 1, port, lobbyCode);
+    startLastCardGame(lobbyPlayers, port, lobbyCode);
+    return playCard(lobbyPlayers, port, lobbyCode).then((data) => {
+      expect(data.currentPlayer).toBe('Reeve');
+      expect(data.returnedCard).toStrictEqual(['2S']);
+      expect(data.nextPlayer).not.toBe('Reeve');
     });
   });
-
-  test('Changing turn in codenames', () => {
-    return checkCodenamesTurnChanged(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
-      expect(result).toBe('Blue');
-    });
-  });
-
-  test('Game over in codenames', () => {
-    return checkCodenamesGameOver(lobbyPlayers, port, lobbyCode, 'Blue').then((result) => {
-      expect(result).toBe('Blue');
+  test('LAST CARD - Drawing two Card', () => {
+    joinLobby(lobbyPlayers, 1, port, lobbyCode);
+    startLastCardGame(lobbyPlayers, port, lobbyCode);
+    return drawCard(lobbyPlayers, port, lobbyCode).then((data) => {
+      expect(data.newHand).toHaveLength(2);
+      expect(data.nextPlayer).not.toBe('Reeve');
     });
   });
 
@@ -134,6 +135,30 @@ describe('LobbyEvent Socket Testing', () => {
       // 5 users total (4 in test call + 1 on test setup - division should be 3/2 red/blue for odd number)
       expect(results.redTeam).toHaveLength(3);
       expect(results.blueTeam).toHaveLength(2);
+    });
+  });
+
+  test('Game over in codenames', () => {
+    return checkCodenamesGameOver(lobbyPlayers, port, lobbyCode, 'Blue').then((result) => {
+      expect(result).toBe('Blue');
+    });
+  });
+
+  test('Changing turn in codenames', () => {
+    return checkCodenamesTurnChanged(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
+      expect(result).toBe('Blue');
+    });
+  });
+
+  test('Updating selected item in codenames', () => {
+    return checkUpdateSelectedCodenames(lobbyPlayers, port, lobbyCode, 5).then((result) => {
+      expect(result).toBe(5);
+    });
+  });
+
+  test('Decrementing score in codenames', () => {
+    return checkCodenamesDecrementScore(lobbyPlayers, port, lobbyCode, 'Red').then((result) => {
+      expect(result).toBe('Red');
     });
   });
 });
