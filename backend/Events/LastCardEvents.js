@@ -5,10 +5,10 @@ function newLastCardGame(io, socket, lobbyManager) {
     const { lobbyID } = socket.player;
     const lobby = lobbyManager.getLobby(lobbyID);
     lobby.game = new Game(lobby.players);
+    io.in(lobbyID).emit('lastcard-new-game', lobby.game.players, lobby.game.deck.getACard().toString());
     lobby.players.forEach((element) => {
       io.in(element.socketID).emit('lastcard-update-hand', lobby.game.deck.getLastCardHand());
     });
-    io.in(lobbyID).emit('lastcard-new-game', lobby.game.players, lobby.game.deck.getACard().toString());
   });
 }
 
@@ -113,7 +113,6 @@ function playCard(io, socket, lobbyManager) {
       nextPlayer = lobby.game.players[(((lobbyIndex + direction + count) % x) + x) % x];
       direction >= 0 ? (count += 1) : (count -= 1);
     }
-    // console.log(lobby.game.players);
     if (lobby.game.players[gameIndex].handSize === 0) {
       playerFin = false;
       lobby.game.players[gameIndex].isPlaying = false;

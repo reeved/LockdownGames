@@ -7,8 +7,7 @@
 .opponentContainer {
   display: flex;
   flex-direction: column;
-  /* flex-grow: 1; */
-  width: 8em;
+  flex-grow: 1;
 }
 
 .buttonContainer {
@@ -53,7 +52,7 @@
   background-color: #303030;
   color: white;
   border-radius: 1em;
-  padding: 0.5em;
+  padding: 1em;
   box-shadow: 0px 0px 15px 1px #002855;
   border: 2px solid transparent;
 }
@@ -61,6 +60,7 @@
 .playerInfo {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-bottom: 1em;
 }
 
@@ -98,7 +98,7 @@
   display: flex;
   height: 65px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .bet {
@@ -113,7 +113,6 @@
   padding: 2.5em;
   height: 0;
   width: 0;
-  margin: auto;
   font-size: calc((7vmin - 1rem) / 5);
 }
 
@@ -129,4 +128,11 @@
 
 .cardImage:first-of-type {
   margin-right: 0.5em;
+}
+
+.playerName {
+  width: 100%;
+  text-align: left;
+  font-size: 1.25rem;
+  font-weight: bold;
 }

@@ -21,7 +21,6 @@ const reducer = (state, action) => {
     }
 
     case 'join-lobby': {
-      console.log(action.status, action.nickname, action.chosenGame);
       return {
         ...state,
         lobbyID: action.status,
@@ -31,7 +30,6 @@ const reducer = (state, action) => {
     }
 
     case 'update-players': {
-      console.log('REDUCER IS HOST:', action.isHost);
       return {
         ...state,
         players: action.playerList,
@@ -83,7 +81,6 @@ export default function useLobbyState() {
     }
 
     function updatePlayers(playerList, isHost) {
-      console.log('IS HOST AT FUNCTION: ', isHost);
       dispatch({
         type: 'update-players',
         playerList,

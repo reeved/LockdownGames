@@ -33,7 +33,7 @@ const GameEnv = ({ loggedIn, component }) => {
           </Col>
           <Col xs={7}>{calledComponent}</Col>
           <Col className={`${styles.Chat} flexCol`}>
-            <h3>GAME CHAT</h3>
+            <h3 style={{ marginBottom: '1em' }}>GAME CHAT</h3>
             <Chatbox />
           </Col>
         </Row>

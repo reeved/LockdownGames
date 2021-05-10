@@ -17,7 +17,6 @@ const reducer = (state, action) => {
     }
 
     case 'poker-game-state': {
-      console.log('Setting gameState', action.gameState);
       state.cardMap.clear();
       return {
         ...state,
@@ -27,7 +26,6 @@ const reducer = (state, action) => {
     }
 
     case 'poker-hole-cards': {
-      console.log('Setting hole cards');
       const newCardMap = new Map(state.cardMap);
       newCardMap.set(action.playerName, action.holeCards);
       return {
@@ -37,7 +35,6 @@ const reducer = (state, action) => {
     }
 
     case 'poker-round': {
-      console.log('Setting poker round', action.pokerRound);
       return {
         ...state,
         pokerRound: action.pokerRound,
@@ -60,7 +57,6 @@ export default function usePokerState() {
     }
 
     function setHoleCards({ playerName, holeCards }) {
-      console.log(playerName, holeCards);
       dispatch({
         type: 'poker-hole-cards',
         playerName,

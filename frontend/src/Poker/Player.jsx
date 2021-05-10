@@ -71,9 +71,8 @@ const Player = ({ handleAction }) => {
         </div>
         <div className={`${styles.mainInfo} ${isOnAction ? styles.isOnAction : null}`}>
           <div className={styles.playerInfo}>
-            <span style={{ width: '100%', textAlign: 'left' }}>{nickname}</span>
-            <span>{stack}</span>
-            {/* <span className={styles.playerWin}>+200</span> */}
+            <span className={styles.playerName}>{nickname}</span>
+            <span style={{ color: '#00bc00' }}>{stack}</span>
           </div>
 
           <div className={styles.playerCards}>

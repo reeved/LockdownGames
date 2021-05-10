@@ -7,8 +7,10 @@ const Opponent = ({ playerName, stack, currentBet, isOnAction, isDealer, isIn })
     <>
       <div className={styles.opponentContainer}>
         <div className={`${styles.mainInfo} ${isOnAction ? styles.isOnAction : null}`}>
-          <span>{playerName}</span>
-          <span>{stack}</span>
+          <div className={styles.playerInfo}>
+            <span className={styles.playerName}>{playerName}</span>
+            <span style={{ color: '#00bc00' }}>{stack}</span>
+          </div>
           <div className={styles.opponentCards}>
             {isIn
               ? cards.map((card, index) => <img key={index} className={styles.cardImage} src="CardImages/blue_back.webp" alt={`Card ${index + 1}`} />)

@@ -57,19 +57,9 @@
   margin-left: 0 !important;
 }
 
-.drawPile:last-child:hover {
-  filter: sepia(0.5) saturate(2);
-  cursor: pointer;
-}
-
 .lastPlayed {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: calc((20vmin - 1rem) / 4);
-}
-
-.lastPlayed > .cardImage:hover {
-  filter: sepia(0.5) saturate(2);
-  cursor: pointer;
 }

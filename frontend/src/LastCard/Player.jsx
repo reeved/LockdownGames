@@ -59,7 +59,6 @@ const Player = ({ setSelected }) => {
         dispatch({ type: 'ace-played', hand: tempCards });
         socket.emit('lastcard-card-played', selectedCards, ownCards.length - selectedCards === 0, totalPickUp, originalAce);
       } else {
-        console.log('Setting Cards');
         dispatch({ type: 'ace-played', hand: ['AC', 'AD', 'AH', 'AS'] });
       }
       setAce(!acePlayed);
@@ -69,8 +68,6 @@ const Player = ({ setSelected }) => {
   };
 
   const cancelHandler = () => {
-    console.log('tempCards:', tempCards);
-    console.log('Ace Played:', acePlayed);
     if (acePlayed) {
       dispatch({ type: 'ace-played', hand: tempCards });
       setTempCards(['AC', 'AD', 'AH', 'AS']);

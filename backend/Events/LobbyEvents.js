@@ -55,7 +55,7 @@ function leaveLobby(io, socket, lobbyManager) {
       const room = io.of('/').adapter.rooms.get(roomID);
 
       if (room.size === 1) {
-        console.log('Cleaning up');
+        console.log('Cleaning up Lobby');
         // user is the last one in the room. lobby should now be cleaned.
         lobbyManager.deleteLobby(roomID);
       } else {

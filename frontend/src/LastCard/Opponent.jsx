@@ -15,10 +15,10 @@ const Opponent = ({ props, isTurn }) => {
   return (
     <>
       <div className={`${styles.mainInfo}`}>
-        <h6>{name}</h6>
+        <h5>{name}</h5>
         <span className={`${isTurn && styles.isTurn}`} />
-        <div className={styles.playerCards}>{cards}</div>
-        <p>{handSize} cards left</p>
+        <div className={`${styles.playerCards} ${styles.opponentCards}`}>{cards}</div>
+        <p>{handSize ? `${handSize} cards left` : 'Player has no cards!'}</p>
       </div>
     </>
   );

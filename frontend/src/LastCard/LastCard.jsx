@@ -46,7 +46,6 @@ function LastCard({ loggedIn }) {
         playersState.unshift(endPlayer);
       }
     }
-    console.log(playersState);
   }
   const drawPile = [];
 
@@ -77,12 +76,14 @@ function LastCard({ loggedIn }) {
       </Row>
       <Row className={styles.midRow}>
         {gameOver ? (
-          <Button variant="contained" style={{ fontSize: '2em' }} onClick={() => socket.emit('lastcard-new-game')}>
+          <Button variant="contained" style={{ fontSize: '2em', margin: 'auto' }} onClick={() => socket.emit('lastcard-new-game')}>
             New Game!
           </Button>
         ) : (
           <>
-            <Col className={styles.lastPlayed}>+{totalPickUp}</Col>
+            <Col className={styles.lastPlayed} style={{ visibility: !totalPickUp && 'hidden' }}>
+              +{totalPickUp}
+            </Col>
             <Col className={styles.lastPlayed}>
               <>
                 <img className={styles.cardImage} src={`CardImages/${lastPlayed}.webp`} alt="Last Played Card" />

@@ -33,7 +33,6 @@ class Game {
   }
 
   startNewDeck() {
-    console.log('New Deck started');
     this.deck = this.discard;
     this.deck.shuffleDeck();
     this.discard = new Deck();

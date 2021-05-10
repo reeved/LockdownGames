@@ -24,7 +24,7 @@ const Lobby = ({ loggedIn }) => {
     startButton: {
       width: '50%',
       marginTop: '3em',
-      fontSize: 'calc(5px + 1vmin)',
+      fontSize: 'calc(10px + 1vmin)',
       color: 'white',
       backgroundColor: '#F72585',
       '&:hover': {

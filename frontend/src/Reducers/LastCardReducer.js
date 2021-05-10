@@ -20,13 +20,11 @@ const reducer = (state, action) => {
     }
 
     case 'new-lastcard': {
-      console.log('Received new lastcard game from server.');
       return {
-        ...state,
+        ...initialState,
         playersState: action.allPlayers,
         lastPlayed: action.startingCard,
         currentTurn: action.allPlayers[0].name,
-        gameOver: false,
       };
     }
 
@@ -39,8 +37,6 @@ const reducer = (state, action) => {
     }
 
     case 'play-card': {
-      console.log('PLAY CARD PLEASE');
-
       return {
         ...state,
         lastPlayed: action.card.slice(-1).toString(),
@@ -55,7 +51,6 @@ const reducer = (state, action) => {
     }
 
     case 'game-over': {
-      console.log('Game OVER');
       return {
         ...state,
         playersState: action.playersState,
@@ -65,7 +60,6 @@ const reducer = (state, action) => {
     }
 
     case 'set-selected': {
-      console.log('Got dispatched. ', action.cards);
       return {
         ...state,
         selectedCards: action.cards,
@@ -81,7 +75,6 @@ const reducer = (state, action) => {
     }
 
     case 'change-turn': {
-      console.log(state.totalPickUp);
       return {
         ...state,
         currentTurn: action.nextPlayer,
@@ -111,7 +104,6 @@ export default function useCodenamesState() {
 
   useEffect(() => {
     function newLastCardGame(allPlayers, startingCard) {
-      console.log('New game has started', allPlayers, startingCard);
       dispatch({
         type: 'new-lastcard',
         allPlayers,
@@ -120,7 +112,6 @@ export default function useCodenamesState() {
     }
 
     function drawCard(hand) {
-      console.log('Hand updated draw card', hand);
       dispatch({
         type: 'updated-hand',
         hand,

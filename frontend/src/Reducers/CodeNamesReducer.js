@@ -26,17 +26,21 @@ const reducer = (state, action) => {
       };
     }
 
+    case 'update-nickname': {
+      return {
+        ...state,
+        nickname: action.nickname,
+      };
+    }
+
     case 'new-codenames': {
-      console.log('Received new game from server.');
-      console.log(action);
-      console.log('Nickname:', state.nickname);
       return {
         ...initialState,
         words: action.words,
         redTeam: action.redTeam,
         blueTeam: action.blueTeam,
-        team: action.redTeam.includes(action.nickname) ? 'Red' : 'Blue',
-        nickname: action.nickname,
+        team: action.redTeam.includes(state.nickname) ? 'Red' : 'Blue',
+        nickname: state.nickname,
         sessionWin: state.sessionWin,
         sessionLoss: state.sessionLoss,
       };
@@ -100,6 +104,15 @@ export default function useCodenamesState() {
   }, []);
 
   useEffect(() => {
+    function joinLobby(status, nickname, chosenGame) {
+      dispatch({
+        type: 'update-nickname',
+        status,
+        nickname,
+        chosenGame,
+      });
+    }
+
     function newCodenamesGame(boardWords, redTeam, blueTeam) {
       dispatch({
         type: 'new-codenames',
@@ -139,6 +152,7 @@ export default function useCodenamesState() {
       });
     }
 
+    socket.on('join-lobby', joinLobby);
     socket.on('codenames-new-codenames', newCodenamesGame);
     socket.on('codenames-update-selected', updateSelected);
     socket.on('codenames-decrement-score', decrementScore);
@@ -146,6 +160,7 @@ export default function useCodenamesState() {
     socket.on('codenames-change-turn', changeTurn);
 
     return () => {
+      socket.removeListener('join-lobby', joinLobby);
       socket.removeListener('codenames-new-codenames', newCodenamesGame);
       socket.removeListener('codenames-update-selected', updateSelected);
       socket.removeListener('codenames-decrement-score', decrementScore);

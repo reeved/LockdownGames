@@ -20,12 +20,8 @@ function Poker({ loggedIn }) {
   }
 
   function handleAction(type, amount) {
-    console.log(type, amount);
     socket.emit('poker-action', type, amount);
   }
-
-  // if (pokerState.pokerRound) pokerState.pokerRound.board = ['AH', 'AH', 'AH', 'AH', 'AH'];
-  // if (pokerState.pokerRound) pokerState.pokerRound.pot = 100;
 
   function setUpOpponents() {
     const opponents = [];
@@ -43,7 +39,6 @@ function Poker({ loggedIn }) {
       let isIn = false;
       if (pokerState.pokerRound) {
         pokerState.pokerRound.pokerActivePlayers.forEach((activePlayer) => {
-          // if (element.playerName === activePlayer.playerName && index === 0) isDealer = true;
           if (element.playerName === activePlayer.playerName && element.playerName === pokerState.pokerRound.dealerName) isDealer = true;
           if (element.playerName === activePlayer.playerName) stack = activePlayer.stack;
           if (element.playerName === activePlayer.playerName) isIn = true;
@@ -84,7 +79,14 @@ function Poker({ loggedIn }) {
           <Row className={styles.midRow}>
             {pokerState.pokerRound ? (
               <>
-                <Col xs={4}>{pokerState.pokerRound.pot !== 0 ? <div className={styles.pot}>{pokerState.pokerRound.pot}</div> : null}</Col>
+                <Col xs={4}>
+                  {pokerState.pokerRound.pot !== 0 ? (
+                    <div className={styles.pot}>
+                      <h6>POT</h6>
+                      {pokerState.pokerRound.pot}
+                    </div>
+                  ) : null}
+                </Col>
                 <Col className={styles.board}>
                   {pokerState.pokerRound.board.length !== 0 ? (
                     <>
@@ -113,7 +115,6 @@ function Poker({ loggedIn }) {
 
           <Row className={styles.bottomRow}>
             <Col>
-              {/* <ChartContainer stackTrack={pokerState.gameState.serializedStackTrack} /> */}
               <Player handleAction={handleAction} />
             </Col>
           </Row>

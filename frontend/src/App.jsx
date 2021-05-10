@@ -15,6 +15,7 @@ import UserStats from './Components/UserStats';
 
 const useStyles = makeStyles({
   loginButton: {
+    color: ({ user }) => (user ? '#000' : '#fff'),
     backgroundColor: ({ user }) => (user ? '#d3d3d3' : '#F72585'),
     '&:hover': {
       backgroundColor: ({ user }) => (user ? '#ffffff' : '#F966A8'),
@@ -48,7 +49,7 @@ function App() {
         <div className="App">
           <AppBar position="static">
             <Toolbar className={`${classes.toolbar}`}>
-              <h5>{user && `Hi, ${user['https://lockdown-games.nz/username'] || user.nickname}!`}</h5>
+              <h5 style={{ marginRight: '1em' }}>{user && `Hi, ${user['https://lockdown-games.nz/username'] || user.nickname}!`}</h5>
               {user && (
                 <MongoContext.Provider value={{ state: mongoState, dispatch: mongoDispatch }}>
                   <GeneralModal buttonText="Stats" buttonEvent={() => socket.emit('get-mongo')} child={<UserStats />} />

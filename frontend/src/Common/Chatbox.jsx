@@ -41,7 +41,6 @@ const Chatbox = () => {
   };
 
   useEffect(() => {
-    console.log('New chat message rendered');
     const element = document.getElementById('chatBox');
     element.scrollTop = element.scrollHeight;
   }, [lobbyState.chatMessages]); // Only re-run the effect if chat messages changes

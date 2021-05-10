@@ -16,7 +16,6 @@ const reducer = (state, action) => {
     }
 
     case 'poker-stats': {
-      console.log('setting poker stats');
       return {
         ...state,
         pokerStats: action.pokerStats,
